@@ -1,0 +1,7 @@
+# Ignore original includes
+include/
+include/**
+!include/stm32_hal.h
+# Ignore original source
+src/
+src/**

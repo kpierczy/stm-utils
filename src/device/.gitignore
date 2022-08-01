@@ -1,0 +1,11 @@
+# Ignore original includes
+include/**
+!include/device.h
+!include/interrupts/
+!include/interrupts/**
+!include/interrupts.h
+!include/startup.h
+# Ignore original source
+src/**
+!src/interrupts/**
+!src/startup.c

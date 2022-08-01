@@ -1,0 +1,9 @@
+# Ignore original config
+config/**
+!config/RTE_Components.h
+# Ignore original includes
+include/
+include/**
+# Ignore original source
+src/
+src/**
