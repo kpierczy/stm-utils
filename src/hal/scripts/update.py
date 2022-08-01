@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Thursday, 15th July 2021 11:27:49 am
-# @modified   Monday, 1st August 2022 10:37:01 pm
+# @modified   Monday, 1st August 2022 11:33:51 pm
 # @project    stm-utils
 # @brief      Updates device-specific HAL files from the official ST's github
 #    
@@ -38,9 +38,6 @@ parser.add_argument('-c', '--copy-config', dest='copy_config', action='store_tru
 # Supported devices' list
 devices = [ 'f0' 'f1' 'f2' 'f3' 'f4' 'f7' 'g0' 'g4' 'h7' 'l0' 'l1' 'l4' 'l5' ]
 
-# If true, HAL configuration tempalte files are cloned to the config folder
-COPY_CONFIG = 0
-
 # Supported devices update (1:on, 0:off)
 if len(sys.argv) > 0 and sys.argv[0] == 'update':
     update_list = {
@@ -66,6 +63,11 @@ PACKAGE_HOME = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')
 
 # ============================================================= Helpers ============================================================ #
 
+# Helper deleting and creating the directory
+def refresh_directory(dir):
+    shutil.rmtree(dir, ignore_errors=True)
+    os.makedirs(dir, exist_ok=True)
+
 # Helper copying all files with the given @p pattern into @p dst
 def copy_content(pattern, dst):
     for file in glob.glob(pattern):
@@ -82,7 +84,7 @@ def remove_content(pattern):
 DOWNLOAD_HAL_HOME = '/tmp/stm_hal'
 
 # Create logger
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('hal-update')
 # Set log level
 coloredlogs.install(level='DEBUG', logger=logger)
 
@@ -111,11 +113,8 @@ for device in devices:
         logger.info(f'Copying STM32${device.capitalize()} include files...')
 
         # Remove old device-specific include files
-        shutil.rmtree(f'{PACKAGE_HOME}/include/hal/{DEVICE_NAME}', ignore_errors=True)
-        shutil.rmtree(f'{PACKAGE_HOME}/include/ll/{DEVICE_NAME}',  ignore_errors=True)
-        # Create required include folder as needed
-        os.makedirs(f'{PACKAGE_HOME}/include/hal/{DEVICE_NAME}', exist_ok=True)
-        os.makedirs(f'{PACKAGE_HOME}/include/ll/{DEVICE_NAME}',  exist_ok=True)
+        refresh_directory(f'{PACKAGE_HOME}/include/hal/{DEVICE_NAME}')
+        refresh_directory(f'{PACKAGE_HOME}/include/ll/{DEVICE_NAME}')
 
         # Copy all include files from the downloaded repository
         copy_content(f'{DOWNLOAD_HAL_HOME}/Inc/{DEVICE_NAME}_hal*', f'{PACKAGE_HOME}/include/hal/{DEVICE_NAME}/')
@@ -123,7 +122,7 @@ for device in devices:
         copy_content(f'{DOWNLOAD_HAL_HOME}/Inc/{DEVICE_NAME}_ll*',  f'{PACKAGE_HOME}/include/ll/{DEVICE_NAME}/' )
         
         # Copy configuration templates, if requested
-        if options['copy_config']:
+        if options.copy_config:
 
             logger.info(f'Copying STM32${device.capitalize()} config files...')
 
@@ -137,11 +136,8 @@ for device in devices:
         logger.info(f'Copying STM32${device.capitalize()} source files...')
 
         # Remove old device-specific source files
-        shutil.rmtree(f'{PACKAGE_HOME}/src/hal/{DEVICE_NAME}', ignore_errors=True)
-        shutil.rmtree(f'{PACKAGE_HOME}/src/ll/{DEVICE_NAME}',  ignore_errors=True)
-        # Create required include folder as needed
-        os.makedirs(f'{PACKAGE_HOME}/src/hal/{DEVICE_NAME}', exist_ok=True)
-        os.makedirs(f'{PACKAGE_HOME}/src/ll/{DEVICE_NAME}',  exist_ok=True)
+        refresh_directory(f'{PACKAGE_HOME}/src/hal/{DEVICE_NAME}')
+        refresh_directory(f'{PACKAGE_HOME}/src/ll/{DEVICE_NAME}')
         # Copy new source files from the downloaded repository
         copy_content(f'{DOWNLOAD_HAL_HOME}/Src/{DEVICE_NAME}_hal*', f'{PACKAGE_HOME}/src/hal/{DEVICE_NAME}/')
         copy_content(f'{DOWNLOAD_HAL_HOME}/Src/Legacy',             f'{PACKAGE_HOME}/src/hal/{DEVICE_NAME}/')

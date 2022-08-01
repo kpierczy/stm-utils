@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Thursday, 15th July 2021 11:27:49 am
-# @modified   Monday, 1st August 2022 11:04:37 pm
+# @modified   Monday, 1st August 2022 11:31:38 pm
 # @project    stm-utils
 # @brief      Downloads CMSIS source from the given URL and replaces local files with the downloaded ones, performing general update
 #             of the CMSIS-Core and CMSIS-RTOS (RT5-based) packages
@@ -48,6 +48,11 @@ PACKAGE_HOME = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')
 
 # ============================================================= Helpers ============================================================ #
 
+# Helper deleting and creating the directory
+def refresh_directory(dir):
+    shutil.rmtree(dir, ignore_errors=True)
+    os.makedirs(dir, exist_ok=True)
+
 # Helper copying all files with the given @p pattern into @p dst
 def copy_content(pattern, dst):
     if not os.path.isdir(dst):
@@ -73,7 +78,7 @@ def find_and_remove_except(file, directory):
 DOWNLOAD_CMSIS_HOME = '/tmp/cmsis'
 
 # Create logger
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('cmsis-update')
 # Set log level
 coloredlogs.install(level='DEBUG', logger=logger)
 
@@ -83,7 +88,7 @@ options = parser.parse_args()
 # ======================================================== Download sources ======================================================== #
 
 # Check if there is anything to do
-if not options['core'] and not options['rtos']:
+if not options.core and not options.rtos:
     logger.info('Nothing to do')
     exit(0)
 
@@ -104,7 +109,7 @@ elif not os.path.isdir(f'{DOWNLOAD_CMSIS_HOME}/{RTOS_PATH}'):
 
 # ======================================================== Update CMSIS-Core ======================================================= #
 
-if options['core']:
+if options.core:
 
     logger.info('Updatting CMSIS-Core package...')
 
@@ -117,34 +122,34 @@ if options['core']:
 
 # ======================================================== Update CMSIS-RTOS ======================================================= #
 
-if options['rtos']:
+if options.rtos:
 
     logger.info('Updatting CMSIS-RTOS package...')
 
     # Update old CMSIS-RTOS include files
-    shutil.rmtree(f'{PACKAGE_HOME}/rtos/include', ignore_errors=True)
+    refresh_directory(f'{PACKAGE_HOME}/rtos/include')
     # Copy new files
     copy_content(f'{DOWNLOAD_CMSIS_HOME}/{RTOS_PATH}/Include/*', f'{PACKAGE_HOME}/rtos/include/')
     
     # Update old CMSIS-RTOS source files
-    shutil.rmtree(f'{PACKAGE_HOME}/rtos/src', ignore_errors=True)
+    refresh_directory(f'{PACKAGE_HOME}/rtos/src')
     # Copy new files
     shutil.copy(f'{DOWNLOAD_CMSIS_HOME}/{RTOS_PATH}/Source/os_systick.c', f'{PACKAGE_HOME}/rtos/src/os_systick.c')
     
     # Update old RTX config files (remove all files except RTE_Components.h which is hand-written)
     find_and_remove_except('RTE_Components.h', f'{PACKAGE_HOME}/rtos/config')
     # Copy new files
-    copy_content(f'{DOWNLOAD_CMSIS_HOME}/RTOS_PATH/RTX/Config/*', f'{PACKAGE_HOME}/rtos/config/')
+    copy_content(f'{DOWNLOAD_CMSIS_HOME}/{RTOS_PATH}/RTX/Config/*', f'{PACKAGE_HOME}/rtos/config/')
     # Rename handlers configuration file
     shutil.move(f'{PACKAGE_HOME}/rtos/config/handlers.c', f'{PACKAGE_HOME}/rtos/config/RTX_Handlers.c')
 
     # Update old RTX include files
-    shutil.rmtree(f'{PACKAGE_HOME}/rtos/src/rtx/include', ignore_errors=True)
+    refresh_directory(f'{PACKAGE_HOME}/rtos/src/rtx/include')
     # Copy new files
     copy_content(f'{DOWNLOAD_CMSIS_HOME}/{RTOS_PATH}/RTX/Include/*', f'{PACKAGE_HOME}/rtos/src/rtx/include/')
 
     # Update old RTX source files
-    shutil.rmtree(f'{PACKAGE_HOME}/rtos/src/rtx/src', ignore_errors=True)
+    refresh_directory(f'{PACKAGE_HOME}/rtos/src/rtx/src')
     # Copy new files
     copy_content(f'{DOWNLOAD_CMSIS_HOME}/{RTOS_PATH}/RTX/Source/GCC/*', f'{PACKAGE_HOME}/rtos/src/rtx/src/gcc/')
     copy_content(f'{DOWNLOAD_CMSIS_HOME}/{RTOS_PATH}/RTX/Source/*.h',   f'{PACKAGE_HOME}/rtos/src/rtx/src/'    )
