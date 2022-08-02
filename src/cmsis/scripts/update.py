@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Thursday, 15th July 2021 11:27:49 am
-# @modified   Monday, 1st August 2022 11:31:38 pm
+# @modified   Tuesday, 2nd August 2022 8:40:04 pm
 # @project    stm-utils
 # @brief      Downloads CMSIS source from the given URL and replaces local files with the downloaded ones, performing general update
 #             of the CMSIS-Core and CMSIS-RTOS (RT5-based) packages
@@ -11,15 +11,21 @@
 # @copyright Krzysztof Pierczyk © 2022
 # ====================================================================================================================================
 
-import os
-from pydoc import isdata
 import sys
-import coloredlogs
-import logging
-import shutil
-import git
-import glob
+import os
+
+# ========================================================== Configuration ========================================================= #
+
+# Path to the main project's dircetory
+PROJECT_HOME = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../..')
+
+# Add python module to the PATH containing links definitions
+sys.path.append(os.path.join(PROJECT_HOME, 'scripts'))
+
+# ============================================================= Imports ============================================================ #
+
 import argparse
+import utils
 
 # ============================================================ Constants =========================================================== #
 
@@ -44,123 +50,106 @@ parser.add_argument('-r', '--rtos', dest='rtos', action='store_true', default=Fa
 # ====================================================== Private configuration ===================================================== #
 
 # Define package home directory
-PACKAGE_HOME = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')
-
-# ============================================================= Helpers ============================================================ #
-
-# Helper deleting and creating the directory
-def refresh_directory(dir):
-    shutil.rmtree(dir, ignore_errors=True)
-    os.makedirs(dir, exist_ok=True)
-
-# Helper copying all files with the given @p pattern into @p dst
-def copy_content(pattern, dst):
-    if not os.path.isdir(dst):
-        os.makedirs(dst)
-    for file in glob.glob(pattern):
-        shutil.copy(file, dst)
-
-# Helper deleting all files with the given @p pattern
-def remove_content(pattern):
-    for file in glob.glob(pattern):
-        os.remove(file)
-
-# Finds files in the @ directory and removes all except @p file 
-def find_and_remove_except(file, directory):
-    for roots, dirs, files in os.walk(directory):
-        for f in files:
-            if not f.endswith(file):
-                os.remove(f)
-
-# ========================================================= Update devcies ===========================================================
+PACKAGE_HOME = os.path.join(PROJECT_HOME, 'src/cmsis')
 
 # Destination of the downloaded repository
 DOWNLOAD_CMSIS_HOME = '/tmp/cmsis'
 
-# Create logger
-logger = logging.getLogger('cmsis-update')
-# Set log level
-coloredlogs.install(level='DEBUG', logger=logger)
+# ========================================================= Parse arguments ======================================================== #
 
 # Parse options
 options = parser.parse_args()
 
-# ======================================================== Download sources ======================================================== #
-
 # Check if there is anything to do
 if not options.core and not options.rtos:
-    logger.info('Nothing to do')
+    utils.logger.info('Nothing to do')
     exit(0)
 
-logger.info('Downloading CMSIS repository (it may take a while)...')
+# ======================================================== Download sources ======================================================== #
 
-# Remove previous download
-shutil.rmtree(DOWNLOAD_CMSIS_HOME, ignore_errors=True)
+utils.logger.info('Downloading CMSIS repository (it may take a while)...')
+
 # Clone repository
-git.Repo.clone_from(URL_BASE, DOWNLOAD_CMSIS_HOME)
+utils.git.download_repo(URL_BASE, DOWNLOAD_CMSIS_HOME, cleanup=True)
 
 # Verify whether expected folder are present in the 
 if not os.path.isdir(f'{DOWNLOAD_CMSIS_HOME}/{CORE_PATH}'):
-    logger.error('Configured path to the CMIS-Core folder is invalid!')
+    utils.logger.error('Configured path to the CMIS-Core folder is invalid!')
     exit(1)
 elif not os.path.isdir(f'{DOWNLOAD_CMSIS_HOME}/{RTOS_PATH}'):
-    logger.error('Configured path to the CMIS-RTOS folder is invalid!')
+    utils.logger.error('Configured path to the CMIS-RTOS folder is invalid!')
     exit(1)
 
 # ======================================================== Update CMSIS-Core ======================================================= #
 
 if options.core:
 
-    logger.info('Updatting CMSIS-Core package...')
+    # Extend path to the downloaded Core sources
+    CORE_PATH = f'{DOWNLOAD_CMSIS_HOME}/{CORE_PATH}'
 
-    # Remove old files
-    shutil.rmtree(f'{PACKAGE_HOME}/core/include', ignore_errors=True)
+    utils.logger.info('Updatting CMSIS-Core package...')
+
     # Copy new files
-    copy_content(f'{DOWNLOAD_CMSIS_HOME}/{CORE_PATH}/Include/*', f'{PACKAGE_HOME}/core/include/')
+    utils.os.copy_glob_content(
+        f'{CORE_PATH   }/Include/*',
+        f'{PACKAGE_HOME}/core/include/',
+        cleanup=True)
 
-    logger.info('CMSIS-Core package updated')
+    utils.logger.info('CMSIS-Core package updated')
 
 # ======================================================== Update CMSIS-RTOS ======================================================= #
 
 if options.rtos:
 
-    logger.info('Updatting CMSIS-RTOS package...')
+    # Extend path to the downloaded RTOS sources
+    RTOS_PATH = f'{DOWNLOAD_CMSIS_HOME}/{RTOS_PATH}'
 
-    # Update old CMSIS-RTOS include files
-    refresh_directory(f'{PACKAGE_HOME}/rtos/include')
-    # Copy new files
-    copy_content(f'{DOWNLOAD_CMSIS_HOME}/{RTOS_PATH}/Include/*', f'{PACKAGE_HOME}/rtos/include/')
+    utils.logger.info('Updatting CMSIS-RTOS package...')
+
+    # Copy new include files
+    utils.os.copy_glob_content(
+        f'{RTOS_PATH   }/Include/*',
+        f'{PACKAGE_HOME}/rtos/include/',
+        cleanup=True)
     
-    # Update old CMSIS-RTOS source files
-    refresh_directory(f'{PACKAGE_HOME}/rtos/src')
-    # Copy new files
-    shutil.copy(f'{DOWNLOAD_CMSIS_HOME}/{RTOS_PATH}/Source/os_systick.c', f'{PACKAGE_HOME}/rtos/src/os_systick.c')
+    # Copy new CMSIS RTOS files
+    utils.os.copy(
+        f'{RTOS_PATH   }/Source/os_systick.c',
+        f'{PACKAGE_HOME}/rtos/src/',
+        cleanup=True)
     
     # Update old RTX config files (remove all files except RTE_Components.h which is hand-written)
-    find_and_remove_except('RTE_Components.h', f'{PACKAGE_HOME}/rtos/config')
+    utils.os.find_and_remove_except(
+        f'{PACKAGE_HOME}/rtos/config/',
+        [ 'RTE_Components.h' ])
     # Copy new files
-    copy_content(f'{DOWNLOAD_CMSIS_HOME}/{RTOS_PATH}/RTX/Config/*', f'{PACKAGE_HOME}/rtos/config/')
+    utils.os.copy_glob_content(
+        f'{RTOS_PATH   }/RTX/Config/*',
+        f'{PACKAGE_HOME}/rtos/config/')
     # Rename handlers configuration file
-    shutil.move(f'{PACKAGE_HOME}/rtos/config/handlers.c', f'{PACKAGE_HOME}/rtos/config/RTX_Handlers.c')
+    utils.os.move(
+        f'{PACKAGE_HOME}/rtos/config/handlers.c',
+        f'{PACKAGE_HOME}/rtos/config/RTX_Handlers.c')
 
-    # Update old RTX include files
-    refresh_directory(f'{PACKAGE_HOME}/rtos/src/rtx/include')
-    # Copy new files
-    copy_content(f'{DOWNLOAD_CMSIS_HOME}/{RTOS_PATH}/RTX/Include/*', f'{PACKAGE_HOME}/rtos/src/rtx/include/')
+    # Copy new RTX5 include files
+    utils.os.copy_glob_content(
+        f'{RTOS_PATH   }/RTX/Include/*',
+        f'{PACKAGE_HOME}/rtos/src/rtx/include/',
+        cleanup=True)
 
     # Update old RTX source files
-    refresh_directory(f'{PACKAGE_HOME}/rtos/src/rtx/src')
+    utils.os.refresh_directory(f'{PACKAGE_HOME}/rtos/src/rtx/src')
     # Copy new files
-    copy_content(f'{DOWNLOAD_CMSIS_HOME}/{RTOS_PATH}/RTX/Source/GCC/*', f'{PACKAGE_HOME}/rtos/src/rtx/src/gcc/')
-    copy_content(f'{DOWNLOAD_CMSIS_HOME}/{RTOS_PATH}/RTX/Source/*.h',   f'{PACKAGE_HOME}/rtos/src/rtx/src/'    )
-    copy_content(f'{DOWNLOAD_CMSIS_HOME}/{RTOS_PATH}/RTX/Source/*.c',   f'{PACKAGE_HOME}/rtos/src/rtx/src/'    )
+    utils.os.copy_glob_content(f'{RTOS_PATH}/RTX/Source/GCC/*', f'{PACKAGE_HOME}/rtos/src/rtx/src/gcc/')
+    utils.os.copy_glob_content(f'{RTOS_PATH}/RTX/Source/*.h',   f'{PACKAGE_HOME}/rtos/src/rtx/src/'    )
+    utils.os.copy_glob_content(f'{RTOS_PATH}/RTX/Source/*.c',   f'{PACKAGE_HOME}/rtos/src/rtx/src/'    )
 
     # Log update finish
-    logger.info('CMSIS-RTOS package updated')
+    utils.logger.info('CMSIS-RTOS package updated')
 
 # ============================================================= Cleanup ============================================================ #
 
 # Remove downlaoded repository
-shutil.rmtree(DOWNLOAD_CMSIS_HOME, ignore_errors=True)
+utils.os.remove_dir(DOWNLOAD_CMSIS_HOME)
 
 # ================================================================================================================================== #
