@@ -13,10 +13,6 @@
 #ifndef __STM_UTILS_HAL_CONFIG_STM32L1xx_H__
 #define __STM_UTILS_HAL_CONFIG_STM32L1xx_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* =========================================================== Includes =========================================================== */
 
 #include "hal_config.h"
@@ -141,9 +137,5 @@ extern "C" {
 #endif /* HAL_PCD_MODULE_ENABLED */
 
 /* ================================================================================================================================ */
-    
-#ifdef __cplusplus
-}
-#endif
 
 #endif

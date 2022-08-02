@@ -13,8 +13,10 @@
 #ifndef __STM_UTILS_HAL_ASSERT_H__
 #define __STM_UTILS_HAL_ASSERT_H__
 
+/* ========================================================== C mangling ========================================================== */
+
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* ========================================================= Declarations ========================================================= */
@@ -49,7 +51,7 @@ void assert_failed(uint8_t* file, uint32_t line);
  *         which reports the name of the source file and the source
  *         line number of the call that failed.
  */
-#define assert_param(expr) ((void)0U)
+#define assert_param(expr) ((void) 0U)
 
 #endif
 
@@ -58,5 +60,7 @@ void assert_failed(uint8_t* file, uint32_t line);
 #ifdef __cplusplus
 }
 #endif
+
+/* ================================================================================================================================ */
 
 #endif

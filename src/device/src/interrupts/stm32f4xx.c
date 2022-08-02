@@ -13,7 +13,7 @@
 /* ======================================================== Predefinitions ======================================================== */
 
 // Unused vector handler
-static __attribute__((interrupt)) void unusedVector(void) { while(1); };
+static __attribute__((interrupt)) void unused_vector(void) { while(1); };
 
 /* =========================================================== Includes =========================================================== */
 
@@ -21,19 +21,6 @@ static __attribute__((interrupt)) void unusedVector(void) { while(1); };
 #include "interrupts.h"
 
 /* ================================================= Emulated vectors definitions ================================================= */
-
-// Separate interrupt vectors for EXTI lines
-ISR_VECTOR(ISR_EXTI5);
-ISR_VECTOR(ISR_EXTI6);
-ISR_VECTOR(ISR_EXTI7);
-ISR_VECTOR(ISR_EXTI8);
-ISR_VECTOR(ISR_EXTI9);
-ISR_VECTOR(ISR_EXTI10);
-ISR_VECTOR(ISR_EXTI11);
-ISR_VECTOR(ISR_EXTI12);
-ISR_VECTOR(ISR_EXTI13);
-ISR_VECTOR(ISR_EXTI14);
-ISR_VECTOR(ISR_EXTI15);
 
 // Dispatcher of the EXTI 5-9 lines
 void ISR_EXTI9_5(void) {
@@ -77,12 +64,12 @@ void ISR_EXTI15_10(void) {
 
 /* ======================================================== Vectors' table ======================================================== */
 
-const vectFunctionPtr isrVectors[] __attribute__((section(".isr_vector"))) = {
+const VectorFunctionPtr isr_vectors_table[] __attribute__((section(".isr_vector"))) = {
 
     // Stack pointer
-    (vectFunctionPtr) (long) &_estack,
+    (VectorFunctionPtr) (long) &_estack,
     // Reset handler
-    resetHandler,
+    reser_handler,
 
     /* ----------------------------- Exception vectors ----------------------------- */    
 
@@ -92,11 +79,11 @@ const vectFunctionPtr isrVectors[] __attribute__((section(".isr_vector"))) = {
     EXC_BusFault,
     EXC_UsageFault,
     0, 0, 0, 0,
-    SVC_Handler,
+    EXC_SVC,
     EXC_DebugMonitor,
     0,
-    PendSV_Handler,
-    SysTick_Handler,
+    EXC_PendSV,
+    EXC_SysTick,
 
     /* ----------------------------- Interrupt vectors ----------------------------- */
 

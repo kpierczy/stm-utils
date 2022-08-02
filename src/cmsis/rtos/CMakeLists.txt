@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Monday, 14th June 2021 6:53:51 pm
-# @modified   Monday, 1st August 2022 11:04:52 pm
+# @modified   Wednesday, 3rd August 2022 12:13:18 am
 # @project    stm-utils
 # @brief      CMSIS package for an arbitrary Cortex-M platform
 #  
@@ -14,10 +14,28 @@
 # @copyright Krzysztof Pierczyk © 2022
 # ====================================================================================================================================
 
+# ====================================================================================================================================
+# ------------------------------------------------------------- Options --------------------------------------------------------------
+# ====================================================================================================================================
+
+# Path to the include directory containing RTX_Components.h and RTX_Config.h files
+set(RTX_CONFIG_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/config" CACHE PATH    
+    "Path to the include directory containing RTX_Components.h and RTX_Config.h files")
+# Path to the RTX_Config.c config file
+set(RTX_CONFIG_FILE "${CMAKE_CURRENT_LIST_DIR}/config/RTX_Config.c" CACHE FILEPATH
+    "Path to the RTX_Config.c config file")
+# Path to the RTX_Handlers.c config file
+set(RTX_HANDLERS_FILE "${CMAKE_CURRENT_LIST_DIR}/config/RTX_Handlers.c" CACHE FILEPATH
+    "Path to the RTX_Handlers.c config file")
+
+# ====================================================================================================================================
+# ------------------------------------------------------------- Library --------------------------------------------------------------
+# ====================================================================================================================================
+
 # Define library
 add_library(cmsis_rtos
-    config/RTX_Config.c
-    config/RTX_Handlers.c
+    ${RTX_CONFIG_FILE}
+    ${RTX_HANDLERS_FILE}
     src/os_systick.c
     src/rtx/src/rtx_delay.c
     src/rtx/src/rtx_evr.c
@@ -41,7 +59,7 @@ target_include_directories(cmsis_rtos
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/config
+        ${RTX_CONFIG_INCLUDE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/src/rtx/include
 )
 
@@ -90,6 +108,7 @@ if(${MASTER_PROJECT})
     set_target_properties(cmsis_rtos PROPERTIES EXPORT_NAME CMSIS::RTOS)
 
     # Install header files
-    install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    install(DIRECTORY include/                   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    install(DIRECTORY ${RTX_CONFIG_INCLUDE_DIR}/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 endif()

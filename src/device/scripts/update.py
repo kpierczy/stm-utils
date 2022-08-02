@@ -3,117 +3,102 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Thursday, 15th July 2021 11:27:49 am
-# @modified   Monday, 1st August 2022 10:29:53 pm
+# @modified   Tuesday, 2nd August 2022 10:50:29 pm
 # @project    stm-utils
 # @brief      Updates CMSIS device files from official ST's github
 #    
 # @copyright Krzysztof Pierczyk © 2022
 # ====================================================================================================================================
 
-from codecs import ignore_errors
-import os
 import sys
-import coloredlogs
-import logging
-import shutil
-import git
-import glob
+import os
 
-# ============================================================ Constants =========================================================== #
+# ========================================================== Configuration ========================================================= #
+
+# Path to the main project's dircetory
+PROJECT_HOME = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../..')
+
+# Add python module to the PATH containing links definitions
+sys.path.append(os.path.join(PROJECT_HOME, 'scripts'))
+
+# ============================================================= Imports ============================================================ #
+
+import argparse
+import utils
+
+# ========================================================== Configuration ========================================================= #
 
 # URL of the github repository to be downloaded
 URL_BASE = 'https://github.com/STMicroelectronics/cmsis_device'
 
-# ========================================================== Configuration ========================================================= #
+# ============================================================= Options ============================================================ #
 
-# Supported devices' list
-devices = [ 'f0' 'f1' 'f2' 'f3' 'f4' 'f7' 'g0' 'g4' 'h7' 'l0' 'l1' 'l4' 'l5' ]
+# List of supported families
+SUPPORTED_FAMILIES = [ 'f0', 'f1', 'f2', 'f3', 'f4', 'f7', 'g0', 'g4', 'h7', 'l0', 'l1', 'l4', 'l5' ]
 
-# Supported devices update (1:on, 0:off)
-if len(sys.argv) > 0 and sys.argv[0] == 'update':
-    update_list = {
-        'f0' : ('f0' in sys.argv),
-        'f1' : ('f1' in sys.argv),
-        'f2' : ('f2' in sys.argv),
-        'f3' : ('f3' in sys.argv),
-        'f4' : ('f4' in sys.argv),
-        'f7' : ('f7' in sys.argv),
-        'g0' : ('g0' in sys.argv),
-        'g4' : ('g4' in sys.argv),
-        'h7' : ('h7' in sys.argv),
-        'l0' : ('l0' in sys.argv),
-        'l1' : ('l1' in sys.argv),
-        'l4' : ('l4' in sys.argv),
-        'l5' : ('l5' in sys.argv),
-    }
+# Create parser
+parser = argparse.ArgumentParser(description='Updates the CMSIS sublibrary to the newest version')
+# Options
+parser.add_argument('families', metavar='FAMILY', type=str, nargs='*', choices=[ [], *SUPPORTED_FAMILIES ],
+    help = 'List of target families for which device sources should be updated', )
 
 # ====================================================== Private configuration ===================================================== #
 
 # Define package home directory
-PACKAGE_HOME = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')
+PACKAGE_HOME = os.path.join(PROJECT_HOME, 'src/device')
 
-# ============================================================= Helpers ============================================================ #
+# Destination of the downloaded repository
+DOWNLOAD_DEVICE_HOME = 'tmp_download/stm_device'
 
-# Helper copying all files with the given @p pattern into @p dst
-def copy_content(pattern, dst):
-    for file in glob.glob(pattern):
-        shutil.copy(file, dst)
+# ========================================================= Parse arguments ======================================================== #
 
-# Helper deleting all files with the given @p pattern
-def remove_content(pattern):
-    for file in glob.glob(pattern):
-        os.remove(file)
+# Parse options
+options = parser.parse_args()
+
+# Check if there is anything to do
+if len(options.families) == 0:
+    utils.logger.info('Nothing to do')
+    exit(0)
 
 # ========================================================= Update devcies ===========================================================
 
-# Destination of the downloaded repository
-DOWNLOAD_DEVICE_HOME = '/tmp/stm_device'
-
-# Create logger
-logger = logging.getLogger(__name__)
-# Set log level
-coloredlogs.install(level='DEBUG', logger=logger)
-
 # Iterate over all devices
-for device in devices:
+for family in options.families:
 
-    # Update device, if requested
-    if update_list[device]:
+    # URL of the downloaded repository
+    DEVICE_URL = f'{URL_BASE}_{family}'
 
-        # URL of the downloaded repository
-        DEVICE_URL = f'{URL_BASE}_{device}'
+    utils.logger.info(f'Downloading STM32{family.capitalize()} repository...')
 
-        logger.info(f'Downloading STM32${device.capitalize()} repository...')
+    # Clone repository
+    utils.git.download_repo(DEVICE_URL, DOWNLOAD_DEVICE_HOME, cleanup=True)
 
-        # Remove previous download
-        shutil.rmtree(DOWNLOAD_DEVICE_HOME, ignore_errors=True)        
-        # Clone repository
-        git.Repo.clone_from(DEVICE_URL, DOWNLOAD_DEVICE_HOME)
+    utils.logger.info(f'Copying STM32{family.capitalize()} include files...')
 
-        logger.info(f'Copying STM32${device.capitalize()} include files...')
+    # Remove old device-specific include files
+    utils.os.refresh_directory(f'{PACKAGE_HOME}/include/device/stm32{family}xx')
+    # Remove aggregating header
+    utils.os.remove(f'{PACKAGE_HOME}/include/device/stm32{family}xx.h')
 
-        # Remove old device-specific include files
-        shutil.rmtree(f'{PACKAGE_HOME}/include/device/stm32{device}xx', ignore_errors=True)
-        # Create destination directory
-        os.makedirs(f'{PACKAGE_HOME}/include/device/stm32{device}xx', exist_ok=True)
-        # Remove aggregating header
-        os.remove('{PACKAGE_HOME}/include/device/stm32{device}xx.h', ignore_errors=True)
-        # Copy all include files from the downloaded repository
-        copy_content(f'{DOWNLOAD_DEVICE_HOME}/Include/*', f'{PACKAGE_HOME}/include/device/stm32{device}xx/')
-        # Move aggregating header to the upper folder
-        shutil.move(
-            f'{PACKAGE_HOME}/include/device/stm32{device}xx/stm32{device}xx.h',
-            f'{PACKAGE_HOME}/include/device/stm32{device}xx.h'
-        )
+    # Copy all include files from the downloaded repository
+    utils.os.copy_glob_content(
+        f'{DOWNLOAD_DEVICE_HOME}/Include/*',
+        f'{PACKAGE_HOME}/include/device/stm32{family}xx/')
+    # Move aggregating header to the upper folder
+    utils.os.move(
+        f'{PACKAGE_HOME}/include/device/stm32{family}xx/stm32{family}xx.h',
+        f'{PACKAGE_HOME}/include/device/stm32{family}xx.h')
 
-        logger.info(f'Copying STM32${device.capitalize()} source files...')
+    utils.logger.info(f'Copying STM32{family.capitalize()} source files...')
 
-        # Remove old device-specific source files
-        os.remove(f'{PACKAGE_HOME}/src/device/system_stm32{device}xx.c')
-        # Copy new source files from the downloaded repository
-        shutil.copy(f'{DOWNLOAD_DEVICE_HOME}/Source/Templates/system_stm32{device}xx.c', f'{PACKAGE_HOME}/src/device/')
+    # Remove old device-specific source files
+    utils.os.remove(f'{PACKAGE_HOME}/src/device/system_stm32{family}xx.c')
+    # Copy new source files from the downloaded repository
+    utils.os.copy(
+        f'{DOWNLOAD_DEVICE_HOME}/Source/Templates/system_stm32{family}xx.c',
+        f'{PACKAGE_HOME}/src/device/')
 
-        # Remove downlaoded repository
-        shutil.rmtree(DOWNLOAD_DEVICE_HOME,  ignore_errors=True)
+    # Remove downlaoded repository
+    utils.os.remove_dir(DOWNLOAD_DEVICE_HOME)
 
 # ================================================================================================================================== #

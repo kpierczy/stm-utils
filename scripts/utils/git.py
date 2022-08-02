@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Tuesday, 2nd August 2022 8:04:00 pm
-# @modified   Tuesday, 2nd August 2022 9:04:20 pm
+# @modified   Tuesday, 2nd August 2022 9:06:28 pm
 # @project    stm-utils
 # @brief      GIT utilities
 # 
@@ -77,8 +77,10 @@ class GitRemoteProgress(git.RemoteProgress):
         self.progressbar.start()
         self.active_task = None
 
+
     def __del__(self) -> None:
         self.progressbar.stop()
+
 
     @classmethod
     def get_curr_op(cls, op_code: int) -> str:
@@ -88,6 +90,7 @@ class GitRemoteProgress(git.RemoteProgress):
         # Remove BEGIN- and END-flag and get op name
         op_code_masked = op_code & cls.OP_MASK
         return cls.OP_CODE_MAP.get(op_code_masked, "?").title()
+
 
     def update(
         self,

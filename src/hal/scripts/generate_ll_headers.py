@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Friday, 16th July 2021 10:17:57 am
-# @modified   Friday, 16th July 2021 10:17:57 am
+# @modified   Wednesday, 3rd August 2022 12:28:20 am
 # @project    stm-utils
 # @brief      Generates universal headers for LL library for all possible STM32 targets
 #    
@@ -54,57 +54,59 @@ families = [ "F0", "F1", "F2", "F3", "F4", "F7", "G0", "G4", "H7", "L0", "L1", "
 
 # List of libraries to generate headers for (pairs "libname" : "description")
 libraries = {
-    "adc" : "ADC (Analog to Digital Converter)",
-    "bus" : "system bus",
+    "adc"    : "ADC (Analog to Digital Converter)",
+    "bus"    : "system bus",
     "cortex" : "CPU core",
-    "crc" : "CRC (Cyclic Redundancy Check)",
-    "dac" : "DAC (Digital to Analog Converter)",
-    "dma2d" : "DMA (Direct Memory Access) 2D",
-    "dma" : "DMA (Direct Memory Access)",
-    "exti" : "EXTI (External Interrupt)",
-    "fmc" : "FMC (Flash Memory Interface)",
+    "crc"    : "CRC (Cyclic Redundancy Check)",
+    "dac"    : "DAC (Digital to Analog Converter)",
+    "dma2d"  : "DMA (Direct Memory Access) 2D",
+    "dma"    : "DMA (Direct Memory Access)",
+    "exti"   : "EXTI (External Interrupt)",
+    "fmc"    : "FMC (Flash Memory Interface)",
     "fmpi2c" : "FMPI2C (Fast Module Pulse I2C)",
-    "fsmc" : "FSMC (Flexible Static Memory Controller)",
-    "gpio" : "GPIO (Generl Port Input/Output)",
-    "i2c" : "I2C interface",
-    "iwdg" : "IWDG (Independent Watchdog)",
-    "lptim" : "LPTIM (Low Power Timer)",
-    "pwr" : "power",
-    "rcc" : "RCC (Reset & Clock Control)",
-    "rng" : "RNG (Random Number Generator)",
-    "rtc" : "RTC (Real Time Clock)",
-    "sdmmc" : "SDMMC (Secure Digital Multimedia Card)",
-    "spi" : "SPI interface",
+    "fsmc"   : "FSMC (Flexible Static Memory Controller)",
+    "gpio"   : "GPIO (Generl Port Input/Output)",
+    "i2c"    : "I2C interface",
+    "iwdg"   : "IWDG (Independent Watchdog)",
+    "lptim"  : "LPTIM (Low Power Timer)",
+    "pwr"    : "power",
+    "rcc"    : "RCC (Reset & Clock Control)",
+    "rng"    : "RNG (Random Number Generator)",
+    "rtc"    : "RTC (Real Time Clock)",
+    "sdmmc"  : "SDMMC (Secure Digital Multimedia Card)",
+    "spi"    : "SPI interface",
     "system" : "system",
-    "tim" : "timer",
-    "usart" : "USART interface",
-    "usb" : "USB interface",
-    "utils" : "utilities",
-    "wwdg" : "WWDG (Windowed Watchdog)"
+    "tim"    : "timer",
+    "usart"  : "USART interface",
+    "usb"    : "USB interface",
+    "utils"  : "utilities",
+    "wwdg"   : "WWDG (Windowed Watchdog)"
 }
 
 # Generation namespace
 namespace = {
-    "families" : families,
-    "lib" : "",
+    "families"        : families,
+    "lib"             : "",
     "lib_description" : "",
 }
 
 # ============================================================== Code ============================================================== #
 
+# Calculate package home
+PACKAGE_HOME = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')
+
 # Iterate over all libraries to be generated
 for key, value in libraries.items():
 
     # Generate output path for the header file
-    path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../include/ll')
-    path = os.path.join(path, 'stm32_ll_' + key + '.h')
+    path = os.path.join(PACKAGE_HOME, 'include/ll/stm32_ll_' + key + '.h')
 
     # Remove file if already exists
     if os.path.exists(path):
         os.remove(path)
 
     # Fill namespace
-    namespace["lib"] = key
+    namespace["lib"]             = key
     namespace["lib_description"] = value
 
     # Generate template

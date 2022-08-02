@@ -13,22 +13,34 @@
 #ifndef __STM_UTILS_STARTUP_H__
 #define __STM_UTILS_STARTUP_H__
 
+/* ========================================================== C mangling ========================================================== */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* ========================================================= Declarations ========================================================= */
 
 /**
  * @brief Empty stub function
  */
-void stubFunction();
+void stub_function();
 
 /**
  * @brief Function called just after initialization of the MCU
  */
-void startupExtension(void) __attribute__ ((weak));
+void startup_extension(void) __attribute__ ((weak));
 
 /**
  * @brief Function called just after deinitialization of the MCU
  */
-void exitExtension(void) __attribute__ ((weak));
+void exit_extension(void) __attribute__ ((weak));
+
+/* ================================================================================================================================ */
+
+#ifdef __cplusplus
+}
+#endif
 
 /* ================================================================================================================================ */
 

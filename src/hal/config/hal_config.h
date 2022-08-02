@@ -13,10 +13,6 @@
 #ifndef __STM_UTILS_HAL_CONFIG_H__
 #define __STM_UTILS_HAL_CONFIG_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* =========================================================== Includes =========================================================== */
 
 #include "stdint.h"
@@ -74,7 +70,7 @@ extern "C" {
 #define HSI48_VALUE 48000000UL
 // External clock source for I2S peripheral (where applicable)
 #define EXTERNAL_I2S1_CLOCK_VALUE 12288000UL
-#define EXTERNAL_I2S2_CLOCK_VALUE     48000UL
+#define EXTERNAL_I2S2_CLOCK_VALUE    48000UL
 #define EXTERNAL_CLOCK_VALUE EXTERNAL_I2S1_CLOCK_VALUE
 // Value of the SAI1 External clock source in [Hz]
 #define EXTERNAL_SAI1_CLOCK_VALUE 48000UL
@@ -159,11 +155,11 @@ extern "C" {
 #define PHY_MISR ((uint16_t) 0x0012)
 
 // PHY Link mask
-#define PHY_LINK_STATUS ((uint16_t)0x0001)
+#define PHY_LINK_STATUS ((uint16_t) 0x0001)
 // PHY Speed mask
-#define PHY_SPEED_STATUS ((uint16_t)0x0002)
+#define PHY_SPEED_STATUS ((uint16_t) 0x0002)
 // PHY Duplex mask
-#define PHY_DUPLEX_STATUS ((uint16_t)0x0004)
+#define PHY_DUPLEX_STATUS ((uint16_t) 0x0004)
 
 // PHY Enable interrupts
 #define PHY_MICR_INT_EN ((uint16_t) 0x0002)
@@ -323,16 +319,12 @@ extern "C" {
 #define USE_HAL_CRYP_SUSPEND_RESUME 1U
 
 // SD transereceiver usage
-#define USE_SD_TRANSCEIVER 1U
+#define USE_SD_TRANSCEIVER 
 
 /* =========================================================== Includes =========================================================== */
 
 #include "hal_assert.h"
 
 /* ================================================================================================================================ */
-    
-#ifdef __cplusplus
-}
-#endif
 
 #endif

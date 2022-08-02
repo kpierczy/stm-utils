@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Tuesday, 2nd August 2022 7:44:57 pm
-# @modified   Tuesday, 2nd August 2022 8:39:38 pm
+# @modified   Wednesday, 3rd August 2022 12:37:11 am
 # @project    stm-utils
 # @brief      OS utilities
 # 
@@ -32,6 +32,21 @@ import glob
 
 # ============================================================= Helpers ============================================================ #
 
+def remove(file):
+
+    """Removes @p file if it exists"""
+
+    if os.path.isfile(file):
+        os.remove(file)
+    
+
+def make_dir(dir):
+
+    """Makes @p dir if it does not exist (with required parents"""
+
+    os.makedirs(dir, exist_ok=True)
+    
+
 def remove_dir(dir):
 
     """Removes (potentiallt non-empty) @p dir if it exists"""
@@ -59,6 +74,20 @@ def copy(file, dst, cleanup=False):
         os.makedirs(dst, exist_ok=True)
 
     shutil.copy(file, dst)
+
+
+def copy_dir(src, dst, cleanup=False):
+    
+    """Copies @p src into @p dst"""
+    
+    if cleanup:
+        shutil.rmtree(dst, ignore_errors=True)
+
+    # Create dst directory as needed
+    if dst.endswith('/') and not os.path.isdir(dst):
+        os.makedirs(dst, exist_ok=True)
+
+    shutil.copytree(src, dst)
 
 
 def move(src, dst):

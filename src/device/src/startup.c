@@ -46,20 +46,20 @@ static void earlyCpuSetup(void) {
         SCB->CPACR |= ((3UL << 10*2) | (3UL << 11*2));  // set CP10 and CP11 Full Access
     #endif
     
-	// // Trap divide by zero
-    // SCB->CCR |= SCB_CCR_DIV_0_TRP_Msk | SCB_CCR_STKALIGN_Msk;
+	// Trap divide by zero
+    SCB->CCR |= SCB_CCR_DIV_0_TRP_Msk | SCB_CCR_STKALIGN_Msk;
 
 }
 
 /* ========================================================== Definitions ========================================================= */
 
-void stubFunction() { }
+void stub_function() { }
 
-void startupExtension(void) __attribute__ ((weak, alias("stubFunction")));
+void startup_extension(void) __attribute__ ((weak, alias("stub_function")));
 
-void exitExtension(void) __attribute__ ((weak, alias("stubFunction")));
+void exit_extension(void) __attribute__ ((weak, alias("stub_function")));
 
-void resetHandler(void) {
+void reser_handler(void) {
 
 	// Initialize basic functions of CPU
 	earlyCpuSetup();
@@ -73,7 +73,7 @@ void resetHandler(void) {
         *(dst++) = 0;
 
     // Call external startup code before construtors call
-    startupExtension();
+    startup_extension();
 
     // Call constructors
     __libc_init_array();
@@ -85,7 +85,7 @@ void resetHandler(void) {
     __libc_fini_array();
 
 	// Callexternal exit routine
-    exitExtension();
+    exit_extension();
     
     while(1);
 }

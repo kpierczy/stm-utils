@@ -1,3 +1,5 @@
+# Config templates
+config/templates
 # Ignore original includes
 include/**
 !include/stm32_hal.h

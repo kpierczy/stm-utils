@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Thursday, 15th July 2021 11:27:49 am
-# @modified   Tuesday, 2nd August 2022 8:40:04 pm
+# @modified   Tuesday, 2nd August 2022 11:31:49 pm
 # @project    stm-utils
 # @brief      Downloads CMSIS source from the given URL and replaces local files with the downloaded ones, performing general update
 #             of the CMSIS-Core and CMSIS-RTOS (RT5-based) packages
@@ -27,7 +27,7 @@ sys.path.append(os.path.join(PROJECT_HOME, 'scripts'))
 import argparse
 import utils
 
-# ============================================================ Constants =========================================================== #
+# ========================================================== Configuration ========================================================= #
 
 # URL of the github repository to be downloaded
 URL_BASE = 'https://github.com/ARM-software/CMSIS_5'
@@ -53,7 +53,7 @@ parser.add_argument('-r', '--rtos', dest='rtos', action='store_true', default=Fa
 PACKAGE_HOME = os.path.join(PROJECT_HOME, 'src/cmsis')
 
 # Destination of the downloaded repository
-DOWNLOAD_CMSIS_HOME = '/tmp/cmsis'
+DOWNLOAD_CMSIS_HOME = 'tmp_download/cmsis'
 
 # ========================================================= Parse arguments ======================================================== #
 

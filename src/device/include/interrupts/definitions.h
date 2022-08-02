@@ -13,27 +13,42 @@
 #ifndef __STM_UTILS_DEVICE_INTERRUPTS_DEFINITIONS_H__
 #define __STM_UTILS_DEVICE_INTERRUPTS_DEFINITIONS_H__
 
+/* ========================================================== C mangling ========================================================== */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* ========================================================= Declarations ========================================================= */
 
 // Init value for the stack pointer. defined in linker script
 extern unsigned long _estack;
 
 // Pointer to the ISR function
-typedef void(*vectFunctionPtr)(void);
+typedef void(*VectorFunctionPtr)(void);
 
 // MCU's reset handler
-void resetHandler(void) __attribute__((interrupt, noreturn));
+void reser_handler(void) __attribute__((interrupt, noreturn));
 
 /* ========================================================== Definitions ========================================================= */
 
 // Shortcut macro for defining weakly aliased interrupt handler
-#define ISR_VECTOR( handlerName ) void handlerName(void) __attribute__ ((interrupt, weak, alias("unusedVector")))
+#define ISR_VECTOR( handler_name ) void handler_name(void) __attribute__ ((interrupt, weak, alias("unused_vector")))
+
+// Shortcut macro for defining alias vector
+#define ISR_VECTOR_ALIAS( handler_name, aliased ) void handler_name(void) __attribute__ ((interrupt, weak, alias(aliased)))
 
 // Shortcut macro for defining forced interrupt handler (for separate handlers of EXTIx lines)
-#define ISR_VECTOR_FORCED( handlerName ) void handlerName(void) __attribute__ ((interrupt))
+#define ISR_VECTOR_FORCED( handler_name ) void handler_name(void) __attribute__ ((interrupt))
 
 // Helper macro checking whether EXTI line's interrupt is pending
 #define ExtiPends(flags, inp) ((flags) & (1<<(inp)))
+
+/* ================================================================================================================================ */
+
+#ifdef __cplusplus
+}
+#endif
 
 /* ================================================================================================================================ */
 

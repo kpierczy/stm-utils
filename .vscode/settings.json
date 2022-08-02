@@ -363,7 +363,8 @@
         "ranges": "cpp",
         "tuple": "cpp",
         "*.cmake.in": "cmake",
-        "variant": "cpp"
+        "variant": "cpp",
+        "interrupts.h": "c"
     },
     
 }

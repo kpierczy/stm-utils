@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Monday, 14th June 2021 6:53:51 pm
-# @modified   Monday, 19th July 2021 8:00:58 pm
+# @modified   Wednesday, 3rd August 2022 12:40:03 am
 # @project    stm-utils
 # @brief      CMake package for stm-utils project
 #    
@@ -41,6 +41,7 @@ if(${MASTER_PROJECT})
 
     # Make sure that custom modules like stm-utils-config.cmake.in are found
     list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
+    list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/templates)
 
     # Select appropriate device-dependend options
     include(${CMAKE_SOURCE_DIR}/cmake/device.cmake)
@@ -108,7 +109,7 @@ if(${MASTER_PROJECT})
 
     # Generate `stm-utils-config.cmake` file
     configure_package_config_file(
-        ${CMAKE_CURRENT_LIST_DIR}/cmake/${PROJECT_NAME}-config.cmake.in
+        ${CMAKE_CURRENT_LIST_DIR}/cmake/templates/${PROJECT_NAME}-config.cmake.in
         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
         INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
     )
