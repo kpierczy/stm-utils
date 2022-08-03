@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Tuesday, 2nd August 2022 8:04:00 pm
-# @modified   Tuesday, 2nd August 2022 9:06:28 pm
+# @modified   Wednesday, 3rd August 2022 10:42:09 pm
 # @project    stm-utils
 # @brief      GIT utilities
 # 
@@ -34,9 +34,9 @@ import rich.console
 # ============================================================= Helpers ============================================================ #
 
 class GitRemoteProgress(git.RemoteProgress):
-
+    
     """Custom progess bar drawer"""
-
+    
     # Stages
     OP_CODES = [
         "BEGIN",
@@ -54,12 +54,11 @@ class GitRemoteProgress(git.RemoteProgress):
     OP_CODE_MAP = {
         getattr(git.RemoteProgress, _op_code): _op_code for _op_code in OP_CODES
     }
-
-
+    
     def __init__(self) -> None:
-
+        
         """Initializes the drawer"""
-
+        
         super().__init__()
         
         self.progressbar = rich.progress.Progress(
@@ -76,22 +75,19 @@ class GitRemoteProgress(git.RemoteProgress):
         
         self.progressbar.start()
         self.active_task = None
-
-
+    
     def __del__(self) -> None:
         self.progressbar.stop()
-
-
+    
     @classmethod
     def get_curr_op(cls, op_code: int) -> str:
-
+        
         """Get OP name from OP code."""
         
         # Remove BEGIN- and END-flag and get op name
         op_code_masked = op_code & cls.OP_MASK
         return cls.OP_CODE_MAP.get(op_code_masked, "?").title()
-
-
+    
     def update(
         self,
         op_code: int,
@@ -99,7 +95,7 @@ class GitRemoteProgress(git.RemoteProgress):
         max_count: str | float | None = None,
         message: str | None = "",
     ) -> None:
-
+        
         # Start new bar on each BEGIN-flag
         if op_code & self.BEGIN:
             self.curr_op = self.get_curr_op(op_code)
@@ -108,13 +104,13 @@ class GitRemoteProgress(git.RemoteProgress):
                 total=max_count,
                 message=message,
             )
-
+        
         self.progressbar.update(
             task_id=self.active_task,
             completed=cur_count,
             message=message,
         )
-
+        
         # End progress monitoring on each END-flag
         if op_code & self.END:
             self.progressbar.update(
@@ -125,16 +121,47 @@ class GitRemoteProgress(git.RemoteProgress):
 
 # ============================================================ Utilities =========================================================== #
 
-def download_repo(url, directory, cleanup=False):
-
-    """Downloads GIT repository from @p url into @p directory. Clears @p directory if @p cleanup is @c True"""
-
+def download_repo(url, directory, cleanup=False, branch=None, commit=None):
+    
+    """Downloads GIT repository from @p url into @p directory. Clears @p directory if @p cleanup is @c True
+    
+    Parameters
+    ----------
+    url : str
+        URL of the repository
+    directory : str
+        target directory for the repo
+    branch : str
+        branch to be downloaded
+    """
+    
     # Remove previous download
     if cleanup:
         shutil.rmtree(directory, ignore_errors=True)
-
+    
     # Clone repository
     if not os.path.exists(directory):
-        git.Repo.clone_from(url, directory, progress=GitRemoteProgress())
+        repo = git.Repo.clone_from(url, directory, progress=GitRemoteProgress())
+    
+    # If branch given
+    if branch is not None:
+        
+        # Create branch head, as needed
+        if not branch in repo.heads:
+            
+            origin = repo.remotes.origin
+            
+            # Create local branch from remote one
+            repo.create_head(branch, origin.refs[branch])
+            # Set local branch to track remote branch
+            repo.heads[branch].set_tracking_branch(origin.refs.master)  
+            # Checkout local branch to working tree
+            repo.heads[branch].checkout()
+        
+    # If commit given, reset
+    if commit is not None:
+        
+        # Reset repo to match the commit
+        repo.head.reset(commit, index=True, working_tree=True)
 
 # ================================================================================================================================== #
