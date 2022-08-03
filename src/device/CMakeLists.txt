@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Monday, 14th June 2021 6:53:51 pm
-# @modified   Monday, 1st August 2022 10:31:43 pm
+# @modified   Wednesday, 3rd August 2022 1:40:03 am
 # @project    stm-utils
 # @brief      Device-specifix CMSIS interface implementation
 #    
@@ -19,6 +19,13 @@ add_library(device
     src/device/system_${DeviceFamily}.c
     src/interrupts/${DeviceFamily}.c
     src/startup.c
+)
+
+# Add ST-secific defines
+target_compile_definitions(device
+    PUBLIC
+        ${DEVICE}
+        ${DeviceType}
 )
 
 # Add header files
@@ -45,8 +52,9 @@ add_library(stm-utils::device ALIAS device)
 
 # Silence some library warnings
 target_compile_options(device
-    -Wno-unused-parameter
-    -Wno-unused-function
+    PUBLIC
+        -Wno-unused-parameter
+        -Wno-unused-function
 )
 
 target_compile_options(device

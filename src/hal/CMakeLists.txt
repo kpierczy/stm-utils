@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Monday, 14th June 2021 6:53:50 pm
-# @modified   Wednesday, 3rd August 2022 12:23:20 am
+# @modified   Wednesday, 3rd August 2022 1:39:54 am
 # @project    stm-utils
 # @brief      CMakeList for used elements of HAL library
 #    
@@ -49,6 +49,13 @@ add_library(hal
     ${HalLegacySources}
 )
 
+# Add ST-secific defines
+target_compile_definitions(hal
+    PUBLIC
+        ${DEVICE}
+        ${DeviceType}
+)
+
 # Add compilation flags
 if(${USE_FULL_LL})
     target_compile_options(hal
@@ -61,7 +68,7 @@ endif()
 target_include_directories(hal
     PUBLIC 
         $<INSTALL_INTERFACE:include>       
-        $<BUILD_INTERFACE:${HAL_CONFIG_INCLUDE_DIR}
+        $<BUILD_INTERFACE:${HAL_CONFIG_INCLUDE_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/config/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/ll/${DeviceFamily}>
@@ -85,8 +92,6 @@ if(HAL_BUILD)
     
 endif()
 
-endif()
-
 # Link dependancies
 target_link_libraries(hal
     ${PROJECT_NAME}::device
@@ -102,9 +107,10 @@ add_library(${PROJECT_NAME}::hal ALIAS hal)
 
 # Silence some library warnings
 target_compile_options(hal
-    -Wno-unused-parameter
-    -Wno-unused-but-set-variable
-    -Wno-unused-function
+    PUBLIC
+        -Wno-unused-parameter
+        -Wno-unused-but-set-variable
+        -Wno-unused-function
 )
 
 # Additional definitions

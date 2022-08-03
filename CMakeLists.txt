@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Monday, 14th June 2021 6:53:51 pm
-# @modified   Wednesday, 3rd August 2022 12:40:03 am
+# @modified   Wednesday, 3rd August 2022 2:03:31 am
 # @project    stm-utils
 # @brief      CMake package for stm-utils project
 #    
@@ -27,6 +27,14 @@ endif()
 
 # Project name, version and used languages
 project(stm-utils VERSION 1.0 LANGUAGES ASM C)
+
+# ====================================================================================================================================
+# ------------------------------------------------------------- Helpers --------------------------------------------------------------
+# ====================================================================================================================================
+
+# Includes
+include (${CMAKE_CURRENT_LIST_DIR}/cmake/device.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/cmake/helpers.cmake)
 
 # ====================================================================================================================================
 # ----------------------------------------------------- Toolchain configuration ------------------------------------------------------
@@ -63,17 +71,20 @@ add_compile_definitions(
 # ====================================================================================================================================
 
 # CMSIS libraries
-add_subdirectory(cmsis)
+add_subdirectory(src/cmsis)
 # Device-specific CMSIS headers
-add_subdirectory(device)
+add_subdirectory(src/device)
 # HAL/LL libraries
-add_subdirectory(hal)
+add_subdirectory(src/hal)
 
 # ====================================================================================================================================
 # ------------------------------------------------------ Targets' installation -------------------------------------------------------
 # ====================================================================================================================================
 
 if(${MASTER_PROJECT})
+
+    # Include standard isntall paths
+    include(GNUInstallDirs)
 
     # Export the targets to a script
     install(EXPORT ${PROJECT_NAME}-targets
@@ -82,7 +93,7 @@ if(${MASTER_PROJECT})
         NAMESPACE
             ${PROJECT_NAME}::
         DESTINATION
-            ${INSTALL_CONFIGDIR}
+            ${CMAKE_INSTALL_LIBDIR}
     )
 
     # Export targets

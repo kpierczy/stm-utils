@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Wednesday, 3rd August 2022 12:48:33 am
-# @modified   Wednesday, 3rd August 2022 1:12:39 am
+# @modified   Wednesday, 3rd August 2022 1:54:52 am
 # @project    stm-utils
 # @brief      Common part of toolchain files
 # 
@@ -11,6 +11,8 @@
 # @copyright Krzysztof Pierczyk © 2022
 # ====================================================================================================================================
 
+# Include device analysis
+include(${CMAKE_CURRENT_LIST_DIR}/../device.cmake)
 # Include common definitions
 include(${CMAKE_CURRENT_LIST_DIR}/utilities/utilities.cmake)
 
