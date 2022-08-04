@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Wednesday, 3rd August 2022 10:05:17 pm
-# @modified   Wednesday, 3rd August 2022 11:09:12 pm
+# @modified   Thursday, 4th August 2022 11:36:52 am
 # @project    stm-utils
 # @brief      Arguments parsing utilities
 # 
@@ -125,12 +125,18 @@ def define_common_arguments(parser):
         help='If given, downloaded repository(ies) will NOT be removed')
 
 
-def define_common_family_dependenc_arguments(parser, supported_families, default_url_scheme):
+def define_common_family_dependenc_arguments(
+    parser,
+    default_url_scheme,
+    default_repo_name
+):
 
     """Defines arguments common for update scripts that perform MCU-family-specific resource updates"""
 
+    import utils
+
     # Families to be updated (argument)
-    parser.add_argument('families', metavar='FAMILY', type=str, nargs='+', choices=[ [], 'all', *supported_families ],
+    parser.add_argument('families', metavar='FAMILY', type=str, nargs='+', choices=[ [], 'all', *utils.config.SUPPORTED_FAMILIES ],
         help='List of target families for which device sources should be updated')
 
     # Target repository URL scheme (option)
@@ -148,7 +154,7 @@ def define_common_family_dependenc_arguments(parser, supported_families, default
             'is expected to define members with keys wrapped in \"\" not \'\')')
 
     # Target name of the repository directory (option)
-    parser.add_argument('-n', '--repo-name', type=str, dest='repo_name', nargs=1, default='stm-hal',
+    parser.add_argument('-n', '--repo-name', type=str, dest='repo_name', nargs=1, default=default_repo_name,
         help='Target name of the repository directory. Every occurence of "<family>" will be replaced with the ' +
             'actual family identifier (if <FAMILY> given, the identifier will be uppercased)')
             

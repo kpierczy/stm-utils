@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Tuesday, 2nd August 2022 7:44:57 pm
-# @modified   Wednesday, 3rd August 2022 12:37:11 am
+# @modified   Thursday, 4th August 2022 11:25:02 am
 # @project    stm-utils
 # @brief      OS utilities
 # 
@@ -26,6 +26,7 @@
 # ============================================================ Imports ============================================================= #
 
 import os
+import stat
 import pathlib
 import shutil
 import glob
@@ -49,10 +50,32 @@ def make_dir(dir):
 
 def remove_dir(dir):
 
-    """Removes (potentiallt non-empty) @p dir if it exists"""
-
-    shutil.rmtree(dir, ignore_errors=True)
+    """Removes (potentiallt non-empty) @p dir if it exists
     
+    Note
+    ----
+    Manual file-by-file implementation si required to properly handle routine on Windos
+    """
+    
+    # Check if non-file entity given
+    if os.path.isfile(dir):
+        raise Exception('Given entity is not a directory!')
+    # If does not exist, return
+    if not os.path.exists(dir):
+        return
+
+    # Remove content
+    for root, dirs, files in os.walk(dir, topdown=False):
+        for name in files:
+            filename = os.path.join(root, name)
+            os.chmod(filename, stat.S_IWUSR)
+            os.remove(filename)
+        for name in dirs:
+            os.rmdir(os.path.join(root, name))
+            
+    # Remove dir
+    os.rmdir(dir)    
+
 
 def refresh_directory(dir):
 
@@ -67,7 +90,7 @@ def copy(file, dst, cleanup=False):
     """Copies @p file into @p dst"""
     
     if cleanup:
-        shutil.rmtree(dst, ignore_errors=True)
+        remove_dir(dst)
 
     # Create dst directory as needed
     if dst.endswith('/') and not os.path.isdir(dst):
@@ -81,7 +104,7 @@ def copy_dir(src, dst, cleanup=False):
     """Copies @p src into @p dst"""
     
     if cleanup:
-        shutil.rmtree(dst, ignore_errors=True)
+        remove_dir(dst)
 
     # Create dst directory as needed
     if dst.endswith('/') and not os.path.isdir(dst):
@@ -102,10 +125,8 @@ def copy_glob_content(pattern, dst, cleanup=False):
     """Copies all files matching the given @p pattern into @p dst"""
     
     if cleanup:
-        shutil.rmtree(dst, ignore_errors=True)
-
-    if not os.path.isdir(dst):
-        os.makedirs(dst)
+        refresh_directory(dst)
+    
     for file in glob.glob(pattern):
         shutil.copy(file, dst)
 

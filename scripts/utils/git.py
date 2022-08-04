@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Tuesday, 2nd August 2022 8:04:00 pm
-# @modified   Wednesday, 3rd August 2022 10:42:09 pm
+# @modified   Thursday, 4th August 2022 11:01:44 am
 # @project    stm-utils
 # @brief      GIT utilities
 # 
@@ -91,9 +91,9 @@ class GitRemoteProgress(git.RemoteProgress):
     def update(
         self,
         op_code: int,
-        cur_count: str | float,
-        max_count: str | float | None = None,
-        message: str | None = "",
+        cur_count: str or float,
+        max_count: str or float or None = None,
+        message: str or None = "",
     ) -> None:
         
         # Start new bar on each BEGIN-flag
@@ -134,10 +134,12 @@ def download_repo(url, directory, cleanup=False, branch=None, commit=None):
     branch : str
         branch to be downloaded
     """
+
+    import utils
     
     # Remove previous download
     if cleanup:
-        shutil.rmtree(directory, ignore_errors=True)
+        utils.os.remove_dir(directory)
     
     # Clone repository
     if not os.path.exists(directory):

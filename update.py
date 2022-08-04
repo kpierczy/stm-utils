@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Wednesday, 3rd August 2022 10:54:18 pm
-# @modified   Wednesday, 3rd August 2022 11:39:07 pm
+# @modified   Thursday, 4th August 2022 11:35:13 am
 # @project    stm-utils
 # @brief      Wrapper script providing unified update interface for dependent packages of the project
 # 
@@ -40,11 +40,6 @@ import utils
 import argparse
 import subprocess
 
-# ========================================================== Configuration ========================================================= #
-
-# List of supported families
-SUPPORTED_FAMILIES = [ 'f0', 'f1', 'f2', 'f3', 'f4', 'f7', 'g0', 'g4', 'h7', 'l0', 'l1', 'l4', 'l5' ]
-
 # ============================================================ Arguments =========================================================== #
 
 # Create parser
@@ -63,7 +58,7 @@ parser.add_argument('components', metavar='COMPONENT', type=str, nargs='*', choi
 utils.arguments.define_common_arguments(parser)
 
 # Families to be updated (argument)
-parser.add_argument('-f', '--families', dest='families', type=str, nargs='+', choices=[ 'all', *SUPPORTED_FAMILIES ],
+parser.add_argument('-f', '--families', dest='families', type=str, nargs='+', choices=[ 'all', *utils.config.SUPPORTED_FAMILIES ],
     help='List of target families for which sources should be updated')
 
 # ========================================================= Options (cmsis) ======================================================== #

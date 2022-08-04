@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Thursday, 15th July 2021 11:27:49 am
-# @modified   Wednesday, 3rd August 2022 10:52:30 pm
+# @modified   Thursday, 4th August 2022 11:35:59 am
 # @project    stm-utils
 # @brief      Updates CMSIS device files from official ST's github
 #    
@@ -31,9 +31,6 @@ import utils
 # Default scheme of URL of the github repository to be downloaded
 DEFAULT_URL_SCHEME = 'https://github.com/STMicroelectronics/cmsis_device_<family>'
 
-# List of supported families
-SUPPORTED_FAMILIES = [ 'f0', 'f1', 'f2', 'f3', 'f4', 'f7', 'g0', 'g4', 'h7', 'l0', 'l1', 'l4', 'l5' ]
-
 # ============================================================= Options ============================================================ #
 
 # Create parser
@@ -42,7 +39,11 @@ parser = argparse.ArgumentParser(description='Updates the CMSIS Device sublibrar
 # Define common arguments
 utils.arguments.define_common_arguments(parser)
 # Define family-dependent common arguments
-utils.arguments.define_common_family_dependenc_arguments(parser, SUPPORTED_FAMILIES, DEFAULT_URL_SCHEME)
+utils.arguments.define_common_family_dependenc_arguments(
+    parser=parser,
+    default_url_scheme=DEFAULT_URL_SCHEME,
+    default_repo_name='stm-device'
+)
 
 # Parse options
 arguments = parser.parse_args()
@@ -67,7 +68,7 @@ if len(arguments.families) == 0:
 
 # Check if all families are to be updated
 if 'all' in arguments.families:
-    arguments.families = SUPPORTED_FAMILIES
+    arguments.families = utils.config.supported_families
 
 # Iterate over all devices
 for family in arguments.families:

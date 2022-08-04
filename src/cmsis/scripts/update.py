@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Thursday, 15th July 2021 11:27:49 am
-# @modified   Wednesday, 3rd August 2022 11:09:12 pm
+# @modified   Thursday, 4th August 2022 11:26:54 am
 # @project    stm-utils
 # @brief      Downloads CMSIS source from the given URL and replaces local files with the downloaded ones, performing general update
 #             of the CMSIS-Core and CMSIS-RTOS (RT5-based) packages
@@ -168,6 +168,7 @@ if 'rtos' in arguments.components or 'all' in arguments.components:
 
     # Update old RTX source files
     utils.os.refresh_directory(f'{PACKAGE_HOME}/rtos/src/rtx/src')
+    utils.os.refresh_directory(f'{PACKAGE_HOME}/rtos/src/rtx/src/gcc')
     # Copy new files
     utils.os.copy_glob_content(f'{RTOS_PATH}/RTX/Source/GCC/*', f'{PACKAGE_HOME}/rtos/src/rtx/src/gcc/')
     utils.os.copy_glob_content(f'{RTOS_PATH}/RTX/Source/*.h',   f'{PACKAGE_HOME}/rtos/src/rtx/src/'    )
