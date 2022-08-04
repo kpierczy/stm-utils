@@ -10,11 +10,6 @@
  * @copyright Krzysztof Pierczyk © 2022
  * /// ============================================================================================================================ */
 
-/* ======================================================== Predefinitions ======================================================== */
-
-// Unused vector handler
-static __attribute__((interrupt)) void unused_vector(void) { while(1); };
-
 /* =========================================================== Includes =========================================================== */
 
 #include "device.h"
@@ -79,11 +74,11 @@ const VectorFunctionPtr isr_vectors_table[] __attribute__((section(".isr_vector"
     EXC_BusFault,
     EXC_UsageFault,
     0, 0, 0, 0,
-    EXC_SVC,
+    SVC_Handler,
     EXC_DebugMonitor,
     0,
-    EXC_PendSV,
-    EXC_SysTick,
+    PendSV_Handler,
+    SysTick_Handler,
 
     /* ----------------------------- Interrupt vectors ----------------------------- */
 
@@ -173,9 +168,5 @@ const VectorFunctionPtr isr_vectors_table[] __attribute__((section(".isr_vector"
     ISR_SPI4,
     ISR_SPI5
 };
-
-/* ============================================================ Macros ============================================================ */
-
-#undef ExtiPends
 
 /* ================================================================================================================================ */

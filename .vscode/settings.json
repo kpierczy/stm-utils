@@ -364,7 +364,9 @@
         "tuple": "cpp",
         "*.cmake.in": "cmake",
         "variant": "cpp",
-        "interrupts.h": "c"
+        "interrupts.h": "c",
+        "regex": "cpp",
+        "definitions.h": "c"
     },
     
 }

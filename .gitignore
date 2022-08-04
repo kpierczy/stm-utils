@@ -1,3 +1,6 @@
 # Ignore build directory
 build/
 build/**
+# Ignore local tools
+tools/
+tools/**

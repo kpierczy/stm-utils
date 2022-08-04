@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Monday, 14th June 2021 6:53:51 pm
-# @modified   Wednesday, 3rd August 2022 1:40:03 am
+# @modified   Thursday, 4th August 2022 12:50:05 am
 # @project    stm-utils
 # @brief      Device-specifix CMSIS interface implementation
 #    

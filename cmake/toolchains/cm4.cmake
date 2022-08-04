@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Tuesday, 22nd June 2021 6:14:51 pm
-# @modified   Wednesday, 3rd August 2022 1:06:16 am
+# @modified   Thursday, 4th August 2022 1:32:14 am
 # @project    stm-utils
 # @brief      CMake toolchain for ARM Cortex-M4
 #    
@@ -60,7 +60,7 @@ set(CXX_SPECIFIC_FLAGS
 set(LD_SPECIFIC_FLAGS 
     --specs=nano.specs
     --specs=nosys.specs
-    -Wl,--cref,--gc-sections
+    -Wl,--gc-sections
     # -u _printf_float
 )
 
@@ -90,24 +90,32 @@ set(TOOLCHAIN_LINKER_FLAGS_RELEASE ${LD_FLAGS}  ${RELEASE_FLAGS} CACHE INTERNAL 
 
 # ------------------------------------------------------ Compillation Options ----------------------------------------------------------
 
+# Check if config is set
+if(NOT ($ENV{TOOLCHAIN_CMAKE_BUILD_TYPE} STREQUAL "Debug") AND NOT ($ENV{TOOLCHAIN_CMAKE_BUILD_TYPE} STREQUAL "Release"))
+    message(FATAL_ERROR "This toolchain file requires CMAKE_BUILD_TYPE to be set to either 'Debug' or 'Release' mode!")
+endif()
+
 # Compilation options for all targets
 add_compile_options(
     "$<$<AND:$<CONFIG:RELEASE>,$<COMPILE_LANGUAGE:ASM>>:${TOOLCHAIN_ASM_FLAGS_RELEASE}>"
-    "$<$<AND:$<CONFIG:DEBUG>,  $<COMPILE_LANGUAGE:ASM>>:${TOOLCHAIN_ASM_FLAGS_DEBUG}>"
-    "$<$<AND:$<CONFIG:RELEASE>,$<COMPILE_LANGUAGE:C>>:  ${TOOLCHAIN_C_FLAGS_RELEASE}>"
-    "$<$<AND:$<CONFIG:DEBUG>,  $<COMPILE_LANGUAGE:C>>:  ${TOOLCHAIN_C_FLAGS_DEBUG}>"
+    "$<$<AND:$<CONFIG:DEBUG>,$<COMPILE_LANGUAGE:ASM>>:${TOOLCHAIN_ASM_FLAGS_DEBUG}>"
+    "$<$<AND:$<CONFIG:RELEASE>,$<COMPILE_LANGUAGE:C>>:${TOOLCHAIN_C_FLAGS_RELEASE}>"
+    "$<$<AND:$<CONFIG:DEBUG>,$<COMPILE_LANGUAGE:C>>:${TOOLCHAIN_C_FLAGS_DEBUG}>"
     "$<$<AND:$<CONFIG:RELEASE>,$<COMPILE_LANGUAGE:CXX>>:${TOOLCHAIN_CXX_FLAGS_RELEASE}>"
-    "$<$<AND:$<CONFIG:DEBUG>,  $<COMPILE_LANGUAGE:CXX>>:${TOOLCHAIN_CXX_FLAGS_DEBUG}>"
+    "$<$<AND:$<CONFIG:DEBUG>,$<COMPILE_LANGUAGE:CXX>>:${TOOLCHAIN_CXX_FLAGS_DEBUG}>"
     # -save-temps=obj
 )
 
 # Linkage options for all targets
 add_link_options(
-    "$<$<CONFIG:DEBUG>:  ${TOOLCHAIN_LINKER_FLAGS_DEBUG}>"
-    "$<$<CONFIG:RELEASE>:${TOOLCHAIN_LINKER_FLAGS_RELEASE}>"
-    "SHELL:-T ${LINKER_LAYOUT_FILE}"
-    "SHELL:-T ${LINKER_MEMORY_FILE}"
-)
+    "$<$<CONFIG:DEBUG>:${TOOLCHAIN_LINKER_FLAGS_DEBUG}>"
+    "$<$<CONFIG:RELEASE>:${TOOLCHAIN_LINKER_FLAGS_RELEASE}>")
+# Add memory layout script
+if(NOT ${LINKER_MEMORY_FILE} STREQUAL "")
+    add_link_options("SHELL:-T ${LINKER_MEMORY_FILE}")
+endif()
+# Add sections layout script
+add_link_options("SHELL:-T ${LINKER_LAYOUT_FILE}")
 
 # ====================================================================================================================================
 # --------------------------------------------------------------- Tools --------------------------------------------------------------

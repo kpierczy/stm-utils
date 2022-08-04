@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Monday, 14th June 2021 6:53:51 pm
-# @modified   Wednesday, 3rd August 2022 12:13:18 am
+# @modified   Thursday, 4th August 2022 2:28:57 am
 # @project    stm-utils
 # @brief      CMSIS package for an arbitrary Cortex-M platform
 #  

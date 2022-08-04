@@ -35,14 +35,19 @@ void reser_handler(void) __attribute__((interrupt, noreturn));
 // Shortcut macro for defining weakly aliased interrupt handler
 #define ISR_VECTOR( handler_name ) void handler_name(void) __attribute__ ((interrupt, weak, alias("unused_vector")))
 
-// Shortcut macro for defining alias vector
-#define ISR_VECTOR_ALIAS( handler_name, aliased ) void handler_name(void) __attribute__ ((interrupt, weak, alias(aliased)))
+// Externally defined vector
+#define ISR_VECTOR_EXTERN( handler_name ) extern void handler_name(void) __attribute__ ((interrupt))
 
 // Shortcut macro for defining forced interrupt handler (for separate handlers of EXTIx lines)
 #define ISR_VECTOR_FORCED( handler_name ) void handler_name(void) __attribute__ ((interrupt))
 
 // Helper macro checking whether EXTI line's interrupt is pending
 #define ExtiPends(flags, inp) ((flags) & (1<<(inp)))
+
+/* ======================================================== Predefinitions ======================================================== */
+
+// Unused vector handler
+static __attribute__((interrupt)) void unused_vector(void) { while(1); };
 
 /* ================================================================================================================================ */
 

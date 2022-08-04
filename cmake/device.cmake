@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Thursday, 15th July 2021 2:11:27 pm
-# @modified   Wednesday, 3rd August 2022 2:03:35 am
+# @modified   Wednesday, 3rd August 2022 11:51:53 pm
 # @project    stm-utils
 # @brief      Helper script selecting appropriate device include file and architecture based on the device model
 #    
@@ -30,7 +30,6 @@ list(APPEND DEVICES_F1
     "STM32F102x6" "STM32F102xB" "STM32F103x6" "STM32F103xB" "STM32F103xE" "STM32F103xG"
     "STM32F105xC" "STM32F107xC"
 )
-
 
 # Support devices' list (F2)
 list(APPEND DEVICES_F2

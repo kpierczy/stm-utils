@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Wednesday, 14th July 2021 11:45:35 am
-# @modified   Wednesday, 3rd August 2022 1:18:39 am
+# @modified   Wednesday, 3rd August 2022 11:52:29 pm
 # @project    stm-utils
 # @brief      Helper function for CMake scripts
 #    

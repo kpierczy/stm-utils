@@ -12,7 +12,7 @@
  *
  * @copyright Krzysztof Pierczyk © 2021
  * @see https://github.com/lucckb/isixrtos/blob/master/libstm32/scripts/stm32_flash.ld
- */// ============================================================================================================================= */
+ *//* ============================================================================================================================= */
 
 /* ============================================ Interrupts' table (defined in .c file) ============================================ */
 
@@ -205,7 +205,9 @@ SECTIONS
     } > RAM
     
     PROVIDE( __heap_start = _heap_start );
-    PROVIDE( __heap_end   = _heap_end   );
+    PROVIDE(          end = _heap_start );
+    PROVIDE(         _end = _heap_start );
+    PROVIDE(   __heap_end = _heap_end   );
     
     /**
      * Remove the debugging information from the standard libraries 

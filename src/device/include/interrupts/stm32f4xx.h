@@ -13,21 +13,15 @@
 #ifndef __STM_UTILS_DEVICE_INTERRUPTS_STMF4xx_H__
 #define __STM_UTILS_DEVICE_INTERRUPTS_STMF4xx_H__
 
-/* =========================================================== Includes =========================================================== */
-
-#include "interrupts/definitions.h"
-
 /* ========================================================== C mangling ========================================================== */
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* ========================================================= Declarations ========================================================= */
+/* =========================================================== Includes =========================================================== */
 
-extern void SVC_Handler(void);
-extern void PendSV_Handler(void);
-extern void SysTick_Handler(void);
+#include "interrupts/definitions.h"
 
 /* ========================================================== Definitions ========================================================= */
 
@@ -42,10 +36,10 @@ ISR_VECTOR       (EXC_HardFault);
 ISR_VECTOR       (EXC_MemoryManagement);
 ISR_VECTOR       (EXC_BusFault);
 ISR_VECTOR       (EXC_UsageFault);
-ISR_VECTOR_ALIAS (EXC_SVC, "SVC_Handler");
+ISR_VECTOR       (SVC_Handler);
 ISR_VECTOR       (EXC_DebugMonitor);
-ISR_VECTOR_ALIAS (EXC_PendSV, "PendSV_Handler");
-ISR_VECTOR_ALIAS (EXC_SysTick, "SysTick_Handler");
+ISR_VECTOR       (PendSV_Handler);
+ISR_VECTOR       (SysTick_Handler);
 
 // ISR Vector's definitions
 ISR_VECTOR       (ISR_WWDG);
