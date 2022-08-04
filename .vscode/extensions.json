@@ -8,6 +8,11 @@
         "twxs.cmake",
         "ms-vscode.cmake-tools",
 
+        // Embedded applications development
+        "dan-c-underwood.arm",
+        "zixuanwang.linkerscript",
+        "marus25.cortex-debug",
+
         // Editor's sugar
         "psioniq.psi-header",
         "vscode-icons-team.vscode-icons",
@@ -26,6 +31,9 @@
         "trond-snekvik.simple-rst",
         "james-yu.latex-workshop",
         "valentjn.vscode-ltex",
+
+        // Windows
+        "ms-vscode.powershell",
 
         // To be tested
         "tabnine.tabnine-vscode"

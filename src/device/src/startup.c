@@ -39,7 +39,7 @@ extern void __libc_fini_array(void);
 /**
  * @brief Setups basic functions of the Core
  */
-static void earlyCpuSetup(void) {
+static void early_cpu_setup(void) {
 
 	// Enable FPU if present
     #if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
@@ -62,7 +62,7 @@ void exit_extension(void) __attribute__ ((weak, alias("stub_function")));
 void reser_handler(void) {
 
 	// Initialize basic functions of CPU
-	earlyCpuSetup();
+	early_cpu_setup();
 
     // Copy the data segment initializers from flash to SRAM.
     for(unsigned long *src = &_sidata, *dst = &_sdata; dst < &_edata; )

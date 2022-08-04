@@ -36,7 +36,7 @@
                 // DEBUG Mode
                 // - "DEBUG",
                 // Full LL driver
-                "USE_FULL_LL_DRIVER"
+                // "USE_FULL_LL_DRIVER"
 
             ],
             // Browsed directories (recursively)

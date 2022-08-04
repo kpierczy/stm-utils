@@ -1,0 +1,34 @@
+{
+    "configurations": [
+        {
+            "type": "cortex-debug",
+            "name": "Debug STM32",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            // Binaries
+            "executable": "${workspaceRoot}/build/app.elf",
+            // Debugging info
+            "servertype": "external",
+            "showDevDebugTimestamps": true,
+            "interface": "swd",
+            "device": "", // E.g. "STM32H743Z,
+            // Peripherals file
+            "svdFile": "", // E.g. "${workspaceRoot}/config/stm32h743zi2periph.svd",
+            // GDB configuration
+            "armToolchainPath": "", // E.g. "${workspaceFolder}/tools/gcc-arm-none-eabi/bin",
+            "toolchainPrefix": "arm-none-eabi",
+            "gdbTarget": "192.168.128.160:50000",
+            // Debugg config
+            "runToEntryPoint": "main",
+            "demangle": true,
+            // OpenOCD config
+            "configFiles": [
+                // E.g. "interface/stlink.cfg",
+                // E.g. "target/stm32h7x.cfg"
+            ],
+            
+            // Additional config
+            "showDevDebugOutput": false
+        }
+    ]
+}

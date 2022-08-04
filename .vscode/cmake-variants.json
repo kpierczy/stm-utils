@@ -1,0 +1,23 @@
+{
+    "buildType" :{
+        "default": "debug",
+        "description": "Build types provided by the Mbed",
+        "choices": {
+            "debug" :{
+                "short": "Debug",
+                "long": "Build with -0g optimisation",
+                "buildType": "Debug"
+            },
+            "develop" :{
+                "short": "Develop",
+                "long": "Build with -0s optimisation",
+                "buildType": "Develop"
+            },
+            "release" :{
+                "short": "Release",
+                "long": "Build with -0g ptimisation and additional optimisations",
+                "buildType": "Release"
+            }
+        }
+    }
+}
