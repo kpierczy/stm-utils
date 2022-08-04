@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Monday, 14th June 2021 6:53:51 pm
-# @modified   Thursday, 4th August 2022 3:51:02 am
+# @modified   Thursday, 4th August 2022 2:44:24 pm
 # @project    stm-utils
 # @brief      CMake package for stm-utils project
 #    
@@ -25,18 +25,8 @@ if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   set(MASTER_PROJECT ON)
 endif()
 
-# Pre-toolchain includes
-include (${CMAKE_CURRENT_LIST_DIR}/cmake/device.cmake)
-
 # Project name, version and used languages
 project(stm-utils VERSION 1.0 LANGUAGES ASM C CXX)
-
-# ====================================================================================================================================
-# ------------------------------------------------------------- Helpers --------------------------------------------------------------
-# ====================================================================================================================================
-
-# Includes
-include (${CMAKE_CURRENT_LIST_DIR}/cmake/helpers.cmake)
 
 # ====================================================================================================================================
 # ----------------------------------------------------- Toolchain configuration ------------------------------------------------------

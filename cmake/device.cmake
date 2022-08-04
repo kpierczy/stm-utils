@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Thursday, 15th July 2021 2:11:27 pm
-# @modified   Wednesday, 3rd August 2022 11:51:53 pm
+# @modified   Thursday, 4th August 2022 2:44:13 pm
 # @project    stm-utils
 # @brief      Helper script selecting appropriate device include file and architecture based on the device model
 #    
@@ -11,7 +11,9 @@
 # ====================================================================================================================================
 
 # Target device
-set(DEVICE "Unknown" CACHE STRING "Target device (as checked in stm32xxxx.h files)")
+if(NOT DEFINED DEVICE)
+    set(DEVICE "Unknown" CACHE STRING "Target device (as checked in stm32xxxx.h files)")
+endif()
 
 # ====================================================================================================================================
 # -------------------------------------------------------- Supported devices ---------------------------------------------------------
