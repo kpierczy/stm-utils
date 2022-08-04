@@ -14,14 +14,24 @@
             "includePath": [
 
                 // CMSIS Core
-                "${workspaceFolder}/src/cmsis/core/include/**",
+                "${workspaceFolder}/src/cmsis/core/include",
                 // CMSIS RTOS
-                "${workspaceFolder}/src/cmsis/rtos/include/**",
-                "${workspaceFolder}/src/cmsis/rtos/rtx/include/**",
+                "${workspaceFolder}/src/cmsis/rtos/config",
+                "${workspaceFolder}/src/cmsis/rtos/include",
+                "${workspaceFolder}/src/cmsis/rtos/rtx/include",
                 // Device files
-                "${workspaceFolder}/src/device/include/**",
+                "${workspaceFolder}/src/device/include",
+                "${workspaceFolder}/src/device/include/device",
+                "${workspaceFolder}/src/device/include/device/**",
+                "${workspaceFolder}/src/device/include/interrupts",
                 // HAL
-                "${workspaceFolder}/src/hal/include/**",
+                "${workspaceFolder}/src/hal/config",
+                "${workspaceFolder}/src/hal/config/include",
+                "${workspaceFolder}/src/hal/include",
+                "${workspaceFolder}/src/hal/include/hal",
+                "${workspaceFolder}/src/hal/include/hal/**",
+                "${workspaceFolder}/src/hal/include/ll",
+                "${workspaceFolder}/src/hal/include/ll/**",
 
             ],
             // General defines
