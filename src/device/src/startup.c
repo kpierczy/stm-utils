@@ -47,8 +47,9 @@ static void early_cpu_setup(void) {
     #endif
     
 	// Trap divide by zero
-    SCB->CCR |= SCB_CCR_DIV_0_TRP_Msk | SCB_CCR_STKALIGN_Msk;
-
+    #ifdef SCB_CCR_DIV_0_TRP_Msk
+        SCB->CCR |= SCB_CCR_DIV_0_TRP_Msk;
+    #endif
 }
 
 /* ========================================================== Definitions ========================================================= */

@@ -21,7 +21,7 @@
 void ISR_EXTI0_1(void) {
 
     // Get EXTI pending flags
-	unsigned long flags = EXTI->PR;
+	unsigned long flags = (EXTI->RPR1 | EXTI->FPR1);
 
     // Dispatch lines
 	if(ExtiPends(flags, 0))
@@ -31,10 +31,10 @@ void ISR_EXTI0_1(void) {
 }
 
 // Dispatcher of the EXTI 2-3 lines
-void ISR_EXTI0_1(void) {
+void ISR_EXTI2_3(void) {
 
     // Get EXTI pending flags
-	unsigned long flags = EXTI->PR;
+	unsigned long flags = (EXTI->RPR1 | EXTI->FPR1);
 
     // Dispatch lines
 	if(ExtiPends(flags, 2))
@@ -47,7 +47,7 @@ void ISR_EXTI0_1(void) {
 void ISR_EXTI4_15(void) {
 	
     // Get EXTI pending flags
-	unsigned long flags = EXTI->PR;
+	unsigned long flags = (EXTI->RPR1 | EXTI->FPR1);
 
     // Dispatch lines
 	if(ExtiPends(flags, 4))

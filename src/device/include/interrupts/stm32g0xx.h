@@ -66,6 +66,7 @@ ISR_VECTOR       (ISR_USART2);
 /* ========================================================= Pseud-vectors ======================================================== */
 
 // Pseudo-ISR vectors
+ISR_VECTOR       (ISR_EXTI0);
 ISR_VECTOR       (ISR_EXTI1);
 ISR_VECTOR       (ISR_EXTI2);
 ISR_VECTOR       (ISR_EXTI3);
