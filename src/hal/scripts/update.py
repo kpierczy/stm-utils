@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Thursday, 15th July 2021 11:27:49 am
-# @modified   Thursday, 4th August 2022 11:36:06 am
+# @modified   Thursday, 4th August 2022 11:52:02 am
 # @project    stm-utils
 # @brief      Updates device-specific HAL files from the official ST's github
 #    
@@ -134,6 +134,7 @@ for family in arguments.families:
 
     # Remove old device-specific source files
     utils.os.refresh_directory(f'{PACKAGE_HOME}/src/hal/{DEVICE_NAME}')
+    utils.os.refresh_directory(f'{PACKAGE_HOME}/src/hal/{DEVICE_NAME}/Legacy')
     utils.os.refresh_directory(f'{PACKAGE_HOME}/src/ll/{DEVICE_NAME}')
     # Copy new source files from the downloaded repository
     utils.os.copy_glob_content(
