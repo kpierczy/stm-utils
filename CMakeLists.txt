@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Monday, 14th June 2021 6:53:51 pm
-# @modified   Thursday, 4th August 2022 2:44:24 pm
+# @modified   Friday, 5th August 2022 9:56:13 am
 # @project    stm-utils
 # @brief      CMake package for stm-utils project
 #    
@@ -27,6 +27,14 @@ endif()
 
 # Project name, version and used languages
 project(stm-utils VERSION 1.0 LANGUAGES ASM C CXX)
+
+# ====================================================================================================================================
+# ------------------------------------------------------------- Options --------------------------------------------------------------
+# ====================================================================================================================================
+
+# Target device
+set(HAL_BUILD ON CACHE BOOL
+    "If true, HAL library is built on top of LL")
 
 # ====================================================================================================================================
 # ----------------------------------------------------- Toolchain configuration ------------------------------------------------------

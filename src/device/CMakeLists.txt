@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Monday, 14th June 2021 6:53:51 pm
-# @modified   Thursday, 4th August 2022 12:50:05 am
+# @modified   Friday, 5th August 2022 9:56:33 am
 # @project    stm-utils
 # @brief      Device-specifix CMSIS interface implementation
 #    
@@ -27,6 +27,14 @@ target_compile_definitions(device
         ${DEVICE}
         ${DeviceType}
 )
+
+# Add HAL build information
+if(HAL_BUILD)
+    target_compile_definitions(device
+        PUBLIC
+            USE_HAL_DRIVER
+    )
+endif()
 
 # Add header files
 target_include_directories(device

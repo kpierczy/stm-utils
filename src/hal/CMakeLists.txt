@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Monday, 14th June 2021 6:53:50 pm
-# @modified   Wednesday, 3rd August 2022 1:39:54 am
+# @modified   Friday, 5th August 2022 12:04:46 pm
 # @project    stm-utils
 # @brief      CMakeList for used elements of HAL library
 #    
@@ -20,9 +20,6 @@ set(HAL_CONFIG_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/config" CACHE PATH
 # Target device
 set(USE_FULL_LL ON CACHE BOOL
     "If true, full LL library is built")
-# Target device
-set(HAL_BUILD ON CACHE BOOL
-    "If true, HAL library is built on top of LL")
 
 # ====================================================================================================================================
 # ------------------------------------------------------- Library definition ---------------------------------------------------------
@@ -71,6 +68,7 @@ target_include_directories(hal
         $<BUILD_INTERFACE:${HAL_CONFIG_INCLUDE_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/config/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/ll>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/ll/${DeviceFamily}>
 )
 

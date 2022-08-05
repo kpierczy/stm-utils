@@ -34,6 +34,7 @@
                 "${workspaceFolder}/src/hal/include/ll/**",
 
             ],
+            
             // General defines
             "defines": [
 
@@ -49,6 +50,7 @@
                 // "USE_FULL_LL_DRIVER"
 
             ],
+
             // Browsed directories (recursively)
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
