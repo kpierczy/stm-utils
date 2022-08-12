@@ -3,12 +3,59 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Wednesday, 14th July 2021 11:45:35 am
-# @modified   Wednesday, 3rd August 2022 11:52:29 pm
+# @modified   Friday, 12th August 2022 12:49:08 pm
 # @project    stm-utils
 # @brief      Helper function for CMake scripts
 #    
 # @copyright Krzysztof Pierczyk © 2021
 # ====================================================================================================================================
+
+# ====================================================================================================================================
+# --------------------------------------------------- Executable generation helper ---------------------------------------------------
+# ====================================================================================================================================
+
+# -----------------------------------------------------------------------------
+# @brief Produces .hex and .bin files from ELF target
+#
+# @param target
+#    name of the ELF target
+# @param HEX_NAME
+#    name of the resulting .hex file
+# @param target
+#    name of the resulting .bin file
+# -----------------------------------------------------------------------------
+function(generate_bin_hex_from_target target)
+    
+    # -------------------------- Parse arguments -------------------------
+
+    # Single-value arguments
+    set(SINGLE_ARGUMENTS
+        HEX_NAME
+        BIN_NAME
+    )
+
+    # Set arg prefix
+    set(ARG_PREFIX "ARG")
+    # Parse arguments
+    cmake_parse_arguments(${ARG_PREFIX}
+        ""
+        "${SINGLE_ARGUMENTS}"
+        ""
+        ${ARGN}
+    )
+    
+    # -------------------------- Parse arguments -------------------------
+
+    # Generate .hex and .bin binaries
+    add_custom_command(TARGET ${target} POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} -Oihex   $<TARGET_FILE:${target}> ${ARG_HEX_NAME}
+        COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${target}> ${ARG_BIN_NAME}
+        COMMAND ${CMAKE_SIZE} ${target}
+        COMMENT "Building ${ARG_HEX_NAME}
+                 Building ${ARG_BIN_NAME}"
+    )
+
+endfunction()
 
 # ====================================================================================================================================
 # ----------------------------------------------------- General helper functions -----------------------------------------------------
