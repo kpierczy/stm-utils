@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Wednesday, 3rd August 2022 12:48:33 am
-# @modified   Thursday, 4th August 2022 1:05:15 am
+# @modified   Tuesday, 23rd August 2022 2:02:16 pm
 # @project    stm-utils
 # @brief      Common part of toolchain files
 # 
@@ -47,8 +47,8 @@ endif()
 # ====================================================================================================================================
 
 # Path to the linker scripts
-set(LINKER_LAYOUT_FILE ${CMAKE_SOURCE_DIR}/src/device/scripts/link.ld CACHE FILEPATH "Path to the linker script describing sections layout")
-set(LINKER_MEMORY_FILE                                             "" CACHE FILEPATH "Path to the linker script defining memory layout"    )
+set(LINKER_MEMORY_FILE                                                    "" CACHE FILEPATH "Path to the linker script defining memory layout"    )
+set(LINKER_LAYOUT_FILE ${CMAKE_SOURCE_DIR}/src/device/scripts/linker/link.ld CACHE FILEPATH "Path to the linker script describing sections layout")
 # Path to the toolchain root directory
 set(TOOLCHAIN_ROOT ${CMAKE_SOURCE_DIR}/tools/gcc-arm-none-eabi CACHE PATH "Path to the root directory of the ARM Embedded Toolchain")
 

@@ -5,14 +5,19 @@
  * @date       Wednesday, 16th June 2021 12:31:43 am
  * @modified   Wednesday, 16th June 2021 12:31:43 am
  * @project    stm-utils
- * @brief      Linker script for STM32 MCUs. User needs to define `stack_size` symbol as well as `RAM` and `FLASH` memory regions
+ * @brief      Linker script for STM32 MCUs. User needs to define `min_stack_size` symbol as well as `RAM` and `FLASH` memory 
+ *             regions
  *
- * @note `stack_size` is just an approximation that makes linker able to check whether it will fit in memory and how much 
+ * @note `min_stack_size` is just an approximation that makes linker able to check whether it will fit in memory and how much 
  *    of it can be used as heap
  *
  * @copyright Krzysztof Pierczyk © 2021
  * @see https://github.com/lucckb/isixrtos/blob/master/libstm32/scripts/stm32_flash.ld
  *//* ============================================================================================================================= */
+
+/* ========================================================== Definitions ========================================================= */
+
+min_stack_size = 0x400;
 
 /* ============================================ Interrupts' table (defined in .c file) ============================================ */
 
@@ -31,6 +36,7 @@ SECTIONS
      */ 
     .isr_vector : { 
         . = ALIGN(4);
+        PROVIDE(_flash_start = .);
         KEEP(*(.isr_vector)) 
         . = ALIGN(4);
     } >FLASH
@@ -142,7 +148,7 @@ SECTIONS
      * (inidata). It is one task of the startup to copy the initial values from 
      * FLASH to RAM. 
      */
-    .data : AT( _sidata )
+    .data :
     {
         /* This is used by the startup in order to initialize the .data secion */
 	    . = ALIGN(8); 
@@ -156,18 +162,7 @@ SECTIONS
 	    . = ALIGN(8);
    	    _edata = . ;
 
-    } >RAM
-
-    /**
-     * System's stack
-     */
-	.stack (NOLOAD):
-	{
-		. += stack_size;
-		. = ALIGN(8);
-		_estack = .;
-
-	} > RAM
+    } >RAM AT> FLASH
 
     /** 
      * The uninitialized data section
@@ -197,7 +192,7 @@ SECTIONS
         . = ALIGN(8);
         _heap_start = .;
 
-        . = ORIGIN(RAM) + LENGTH(RAM);
+        . = ORIGIN(RAM) + LENGTH(RAM) - min_stack_size;
 
         . = ALIGN(8);
         _heap_end = .;
@@ -208,6 +203,17 @@ SECTIONS
     PROVIDE(          end = _heap_start );
     PROVIDE(         _end = _heap_start );
     PROVIDE(   __heap_end = _heap_end   );
+
+    /**
+     * System's stack
+     */
+	.stack (NOLOAD):
+	{
+		. += min_stack_size;
+		. = ALIGN(8);
+		_estack = .;
+
+	} > RAM
     
     /**
      * Remove the debugging information from the standard libraries 
