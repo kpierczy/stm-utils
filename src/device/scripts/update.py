@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Thursday, 15th July 2021 11:27:49 am
-# @modified   Thursday, 4th August 2022 11:35:59 am
+# @modified   Thursday, 25th August 2022 2:33:29 pm
 # @project    stm-utils
 # @brief      Updates CMSIS device files from official ST's github
 #    
@@ -90,18 +90,18 @@ for family in arguments.families:
     utils.logger.info(f'Copying include files...')
 
     # Remove old device-specific include files
-    utils.os.refresh_directory(f'{PACKAGE_HOME}/include/device/stm32{family}xx')
+    utils.os.refresh_directory(f'{PACKAGE_HOME}/include/device/st/stm32{family}xx')
     # Remove aggregating header
-    utils.os.remove(f'{PACKAGE_HOME}/include/device/stm32{family}xx.h')
+    utils.os.remove(f'{PACKAGE_HOME}/include/device/st/stm32{family}xx.h')
 
     # Copy all include files from the downloaded repository
     utils.os.copy_glob_content(
         f'{DEVICE_ROOT}/Include/*',
-        f'{PACKAGE_HOME}/include/device/stm32{family}xx/')
+        f'{PACKAGE_HOME}/include/device/st/stm32{family}xx/')
     # Move aggregating header to the upper folder
     utils.os.move(
-        f'{PACKAGE_HOME}/include/device/stm32{family}xx/stm32{family}xx.h',
-        f'{PACKAGE_HOME}/include/device/stm32{family}xx.h')
+        f'{PACKAGE_HOME}/include/device/st/stm32{family}xx/stm32{family}xx.h',
+        f'{PACKAGE_HOME}/include/device/st/stm32{family}xx.h')
 
     utils.logger.info(f'Copying source files...')
 

@@ -10,8 +10,8 @@
  * @copyright Krzysztof Pierczyk © 2022
  * /// ============================================================================================================================ */
 
-#ifndef __STM_UTILS_STARTUP_H__
-#define __STM_UTILS_STARTUP_H__
+#ifndef __STM_UTILS_DEVICE__STARTUP_H__
+#define __STM_UTILS_DEVICE__STARTUP_H__
 
 /* ========================================================== C mangling ========================================================== */
 

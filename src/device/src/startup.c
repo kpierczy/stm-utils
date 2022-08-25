@@ -13,7 +13,7 @@
 /* =========================================================== Includes =========================================================== */
 
 #include "device.h"
-#include "startup.h"
+#include "device/startup.h"
 
 /* ========================================================= Declarations ========================================================= */
 
@@ -56,9 +56,12 @@ static void early_cpu_setup(void) {
 
 void stub_function() { }
 
+
 void startup_extension(void) __attribute__ ((weak, alias("stub_function")));
 
+
 void exit_extension(void) __attribute__ ((weak, alias("stub_function")));
+
 
 void reser_handler(void) {
 

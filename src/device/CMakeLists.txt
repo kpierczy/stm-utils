@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Monday, 14th June 2021 6:53:51 pm
-# @modified   Friday, 5th August 2022 9:56:33 am
+# @modified   Thursday, 25th August 2022 2:32:28 pm
 # @project    stm-utils
 # @brief      Device-specifix CMSIS interface implementation
 #    
@@ -17,7 +17,8 @@
 # Define library
 add_library(device
     src/device/system_${DeviceFamily}.c
-    src/interrupts/${DeviceFamily}.c
+    src/interrupts/vectors/${DeviceFamily}.c
+    src/interrupts/${DeviceFamily}.cpp
     src/startup.c
 )
 
@@ -41,8 +42,10 @@ target_include_directories(device
     PUBLIC
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/device>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/device/${DeviceFamily}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/device/st>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/device/st/${DeviceFamily}>
+    PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/interrupts/include>
 )
 
 # Link dependancies

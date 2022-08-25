@@ -5,7 +5,7 @@
  * @date       Tuesday, 6th July 2021 1:51:11 pm
  * @modified   Tuesday, 6th July 2021 1:51:11 pm
  * @project    stm-utils
- * @brief      Interrupt vectors' definitions for STMG0xx devices
+ * @brief      Definitions of interrupt vectors for STMG0xx devices
  *    
  * @copyright Krzysztof Pierczyk © 2022
  * /// ============================================================================================================================ */
@@ -13,7 +13,67 @@
 /* =========================================================== Includes =========================================================== */
 
 #include "device.h"
-#include "interrupts.h"
+#include "interrupts/definitions.h"
+
+/* ========================================================== Definitions ========================================================= */
+
+/**
+ * @note Names for SVC_Handler, PendSV_Handler and SysTick_Handler interrupt
+ *    handlers was set differently to fit RTX-RTOSv5 naming scheme
+ */
+
+// Exception vector's definitions
+ISR_VECTOR       (EXC_NMI);
+ISR_VECTOR       (EXC_HardFault);
+ISR_VECTOR       (EXC_MemoryManagement);
+ISR_VECTOR       (SVC_Handler);
+ISR_VECTOR       (PendSV_Handler);
+ISR_VECTOR       (SysTick_Handler);
+
+// ISR Vector's definitions
+ISR_VECTOR       (ISR_WWDG);
+ISR_VECTOR       (ISR_RTC_TAMP);
+ISR_VECTOR       (ISR_FLASH);
+ISR_VECTOR       (ISR_RCC);
+ISR_VECTOR_FORCED(ISR_EXTI0_1);
+ISR_VECTOR_FORCED(ISR_EXTI2_3);
+ISR_VECTOR_FORCED(ISR_EXTI4_15);
+ISR_VECTOR       (ISR_DMA1_Channel1);
+ISR_VECTOR       (ISR_DMA1_Channel2_3);
+ISR_VECTOR       (ISR_DMA1_Ch4_5_DMAMUX1_OVR);
+ISR_VECTOR       (ISR_ADC1);
+ISR_VECTOR       (ISR_TIM1_BRK_UP_TRG_COM);
+ISR_VECTOR       (ISR_TIM1_CC);
+ISR_VECTOR       (ISR_TIM3);
+ISR_VECTOR       (ISR_TIM14);
+ISR_VECTOR       (ISR_TIM16);
+ISR_VECTOR       (ISR_TIM17);
+ISR_VECTOR       (ISR_I2C1);
+ISR_VECTOR       (ISR_I2C2);
+ISR_VECTOR       (ISR_SPI1);
+ISR_VECTOR       (ISR_SPI2);
+ISR_VECTOR       (ISR_USART1);
+ISR_VECTOR       (ISR_USART2);
+
+/* ========================================================= Pseud-vectors ======================================================== */
+
+// Pseudo-ISR vectors
+ISR_VECTOR       (ISR_EXTI0);
+ISR_VECTOR       (ISR_EXTI1);
+ISR_VECTOR       (ISR_EXTI2);
+ISR_VECTOR       (ISR_EXTI3);
+ISR_VECTOR       (ISR_EXTI4);
+ISR_VECTOR       (ISR_EXTI5);
+ISR_VECTOR       (ISR_EXTI6);
+ISR_VECTOR       (ISR_EXTI7);
+ISR_VECTOR       (ISR_EXTI8);
+ISR_VECTOR       (ISR_EXTI9);
+ISR_VECTOR       (ISR_EXTI10);
+ISR_VECTOR       (ISR_EXTI11);
+ISR_VECTOR       (ISR_EXTI12);
+ISR_VECTOR       (ISR_EXTI13);
+ISR_VECTOR       (ISR_EXTI14);
+ISR_VECTOR       (ISR_EXTI15);
 
 /* ================================================= Emulated vectors definitions ================================================= */
 
@@ -78,10 +138,10 @@ void ISR_EXTI4_15(void) {
 
 /* ======================================================== Vectors' table ======================================================== */
 
-const VectorFunctionPtr isr_vectors_table[] __attribute__((section(".isr_vector"))) = {
+const vector_function_ptr isr_vectors_table[] __attribute__((section(".isr_vector"))) = {
 
     // Stack pointer
-    (VectorFunctionPtr) (long) &_estack,
+    (vector_function_ptr) (long) &_estack,
     // Reset handler
     reser_handler,
 
@@ -135,67 +195,5 @@ const VectorFunctionPtr isr_vectors_table[] __attribute__((section(".isr_vector"
     ISR_USART2,
     0
 };
-
-/* ======================================================= Helper functions ======================================================= */
-
-#ifndef __cplusplus
-
-IRQn_Type get_exti_line_irqn(unsigned index) {
-    switch(index) {
-        case 0:
-        case 1:
-            return EXTI0_1_IRQn;
-        case 2:
-        case 3:
-            return EXTI2_3_IRQn;
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-        case 8:
-        case 9:
-        case 10:
-        case 11:
-        case 12:
-        case 13:
-        case 14:
-        case 15:
-            return EXTI4_15_IRQn;
-        default:
-            return (IRQn_Type) 0xFFFF'FFFF;
-    }
-}
-
-#else
-namespace device {
-
-std::optional<IRQn_Type> get_exti_line_irqn(unsigned index) {
-    switch(index) {
-        case 0:
-        case 1:
-            return EXTI0_1_IRQn;
-        case 2:
-        case 3:
-            return EXTI2_3_IRQn;
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-        case 8:
-        case 9:
-        case 10:
-        case 11:
-        case 12:
-        case 13:
-        case 14:
-        case 15:
-            return EXTI4_15_IRQn;
-        default:
-            return std::optional<IRQn_Type>{ };
-    }
-}
-
-}
-#endif
 
 /* ================================================================================================================================ */

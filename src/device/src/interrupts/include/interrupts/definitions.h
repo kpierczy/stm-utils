@@ -24,9 +24,6 @@ extern "C" {
 // Init value for the stack pointer. defined in linker script
 extern unsigned long _estack;
 
-// Pointer to the ISR function
-typedef void(*VectorFunctionPtr)(void);
-
 // MCU's reset handler
 void reser_handler(void) __attribute__((interrupt, noreturn));
 

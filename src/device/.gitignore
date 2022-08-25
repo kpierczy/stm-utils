@@ -1,10 +1,9 @@
 # Ignore original includes
 include/**
 !include/device.h
-!include/interrupts/
-!include/interrupts/**
-!include/interrupts.h
-!include/startup.h
+!include/device/device.h
+!include/device/interrupts.h
+!include/device/startup.h
 # Ignore original source
 src/**
 !src/interrupts

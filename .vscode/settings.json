@@ -351,6 +351,7 @@
 
     // Files associations
     "files.associations": {
+        "*.cmake.in": "cmake",
         ".clang-format": "yaml",
         "*.svd": "xml",
         "utility": "cpp",
@@ -362,11 +363,14 @@
         "ostream": "cpp",
         "ranges": "cpp",
         "tuple": "cpp",
-        "*.cmake.in": "cmake",
         "variant": "cpp",
         "interrupts.h": "c",
         "regex": "cpp",
-        "definitions.h": "c"
+        "definitions.h": "c",
+        "optional": "cpp",
+        "cstdint": "cpp",
+        "device.h": "c",
+        "startup.h": "c"
     },
     
 }
