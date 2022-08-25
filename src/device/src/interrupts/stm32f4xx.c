@@ -169,4 +169,74 @@ const VectorFunctionPtr isr_vectors_table[] __attribute__((section(".isr_vector"
     ISR_SPI5
 };
 
+/* ======================================================= Helper functions ======================================================= */
+
+#ifndef __cplusplus
+
+IRQn_Type get_exti_line_irqn(unsigned index) {
+    switch(index) {
+        case 0:
+            return EXTI0_IRQn;
+        case 1:
+            return EXTI1_IRQn;
+        case 2:
+            return EXTI2_IRQn;
+        case 3:
+            return EXTI3_IRQn;
+        case 4:
+            return EXTI4_IRQn;
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+            return EXTI5_9_IRQn;
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+        case 15:
+            return EXTI10_15_IRQn;
+        default:
+            return (IRQn_Type) 0xFFFF'FFFF;
+    }
+}
+
+#else
+namespace device {
+
+std::optional<IRQn_Type> get_exti_line_irqn(unsigned index) {
+    switch(index) {
+        case 0:
+            return EXTI0_IRQn;
+        case 1:
+            return EXTI1_IRQn;
+        case 2:
+            return EXTI2_IRQn;
+        case 3:
+            return EXTI3_IRQn;
+        case 4:
+            return EXTI4_IRQn;
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+            return EXTI5_9_IRQn;
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+        case 15:
+            return EXTI10_15_IRQn;
+        default:
+            return std::optional<IRQn_Type>{ };
+    }
+}
+
+}
+#endif
+
 /* ================================================================================================================================ */

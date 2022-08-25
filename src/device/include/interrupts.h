@@ -13,6 +13,16 @@
 #ifndef __STM_UTILS_INTERUPT_H__
 #define __STM_UTILS_INTERUPT_H__
 
+/* =========================================================== Includes =========================================================== */
+
+// Standard includes
+#ifndef __cplusplus
+#include <stdint.h>
+#else
+#include <cstdint>
+#include <optional>
+#endif
+
 /* ====================================================== Vectors definitions ===================================================== */
 
 #if defined(STM32MCU_MAJOR_TYPE_F0)
@@ -43,6 +53,34 @@
 #include "interrupts/stm32l5xx.h"
 #else
 #error Unknown MCU major type
+#endif
+
+/* ================================================= Helper functions definitions ================================================= */
+
+#ifndef __cplusplus
+
+/**
+ * @retval irqn 
+ *    constant corresponding to the interrupt line of the NVIC controller
+ *    used by the EXTIx line where x is given by @p index on success
+ * @retval 0xFFFF'FFFF
+ *    optional if @p idnex is out of range
+ */
+IRQn_Type get_exti_line_irqn(unsigned index);
+
+#else
+namespace device {
+
+/**
+ * @retval irqn 
+ *    constant corresponding to the interrupt line of the NVIC controller
+ *    used by the EXTIx line where x is given by @p index on success
+ * @retval empty 
+ *    optional if @p idnex is out of range
+ */
+std::optional<IRQn_Type> get_exti_line_irqn(unsigned index);
+
+}
 #endif
 
 /* ================================================================================================================================ */
