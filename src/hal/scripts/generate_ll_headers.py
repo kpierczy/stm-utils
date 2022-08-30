@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Friday, 16th July 2021 10:17:57 am
-# @modified   Wednesday, 3rd August 2022 12:28:20 am
+# @modified   Tuesday, 30th August 2022 11:06:27 am
 # @project    stm-utils
 # @brief      Generates universal headers for LL library for all possible STM32 targets
 #    
@@ -61,6 +61,7 @@ libraries = {
     "dac"    : "DAC (Digital to Analog Converter)",
     "dma2d"  : "DMA (Direct Memory Access) 2D",
     "dma"    : "DMA (Direct Memory Access)",
+    "dmamux" : "DMAMUX (Direct Memory Access Requests Multiplexer)",
     "exti"   : "EXTI (External Interrupt)",
     "fmc"    : "FMC (Flash Memory Interface)",
     "fmpi2c" : "FMPI2C (Fast Module Pulse I2C)",
