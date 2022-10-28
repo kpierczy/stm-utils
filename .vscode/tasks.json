@@ -1,7 +1,13 @@
 {
     "version": "2.0.0",
     // Common configuration
-    "options": { "cwd": "${workspaceFolder}" },
+    "options": { 
+    
+        // Working dir
+        "cwd": "${workspaceFolder}",
+        
+    },
+    // Display settings
     "presentation": {
         "echo": true,
         "reveal": "always",
@@ -10,38 +16,65 @@
         "showReuseMessage": true,
         "clear": true
     },
+    // Make all tasks in-shell
+    "type": "shell",
+    // Set default problem matcher
+    "problemMatcher": [],
+
     // Tasks
     "tasks": [
+        
+        /* ===================================================================== */
+        /* ---------------------------- Clean tasks ---------------------------- */
+        /* ===================================================================== */
+
         { /* -------------------------- Cleaning task -------------------------- */
             "label": "Clean",
             "detail": "Cleans up build directory",
             // Command
-            "command": ["rm"],
-            "args" : [ "-rf", "${workspaceFolder}/build" ],
-            "type": "shell",
-            // Problem matcher
-            "problemMatcher" : []
+            "windows" : { "command": "if", 
+                "args": [ 
+                    "(test-path", "${config:cmake.buildDirectory})", "{", "rmdir",
+                    "-Force",
+                    "-Recurse",
+                    "-ErrorAction",
+                    "Ignore",
+                    "${config:cmake.buildDirectory}", "}" 
+                ]
+            },
+            "linux" : {  "command": ["rm"],
+                "args" : [
+                    "-rf", "${config:cmake.buildDirectory}"
+                ],
+            }
         },
+
+        /* ===================================================================== */
+        /* ------------------------ Configuration tasks ------------------------ */
+        /* ===================================================================== */
+
         { /* ------------------------ Configruation task ----------------------- */
            
             "label": "Configure",
             "detail": "Configures CMake build system",
             // Command
-            "command": "${command:cmake.configure} --debug-find",
-            // Problem matcher
-            "problemMatcher" : []
+            "type": "cmake",
+            "command": "configure",
         },
-        { /* --------------------- Clean configruation task -------------------- */
+
+        { /* ------------------------ Configruation task ----------------------- */
+           
             "label": "Clean Configure",
-            "detail": "Cleans up build directory and configures CMake build system along with Mbed target configuration",
+            "detail": "Cleans project and configures CMake build system",
             // Command
             "dependsOn": [ "Clean", "Configure" ],
             "dependsOrder": "sequence",
-            "command": [""],
-            "type": "shell",
-            // Problem matcher
-            "problemMatcher" : []
         },
+        
+        /* ===================================================================== */
+        /* ---------------------------- Build tasks ---------------------------- */
+        /* ===================================================================== */
+
         { /* ------------------------ Default build task ----------------------- */
             "label": "Build",
             "detail": "Builds CMake project using cmake-tools extension",
@@ -51,11 +84,11 @@
             // Group
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false
             }
         },
-        { /* ------------------- Default build task (colors) ------------------- */
-            "label": "Build (Colors)",
+        { /* ----------------------- Default build task ------------------------ */
+            "label": "Build (terminal)",
             "detail": "Mimics build command of the cmake-tools extension to run the task in the regular terminal (with colors)",
             // Command
             "command" : "${config:cmake.cmakePath}",
@@ -66,7 +99,7 @@
                 "--config",
                 "Debug",
                 "--target",
-                "all",
+                "${input:cmake_target}",
                 "-j",
                 "${config:cmake.parallelJobs}",
                 "--"
@@ -77,16 +110,56 @@
                 "isDefault": true
             }
         },
-        { /* ------------------------ Default build task ----------------------- */
+
+        /* ===================================================================== */
+        /* ------------------------- Clean-build tasks ------------------------- */
+        /* ===================================================================== */
+
+        { /* -------------------- Default clean-build task --------------------- */
             "label": "Clean Build",
             "detail": "Cleans up build directory and builds the project",
+            "dependsOn": [ "Clean Configure", "Build (terminal)" ],
             "dependsOrder": "sequence",
-            "dependsOn": [ "Clean Configure", "Build (Colors)" ],
-            // Command
-            "command": "",
             // Group
-            "group": "build"
+            "group": { "kind": "build" }
         },
+        
+        /* ===================================================================== */
+        /* ---------------------------- Flash tasks ---------------------------- */
+        /* ===================================================================== */
+
+        { /* ------------------------ Default flash task ----------------------- */
+            "label": "Flash",
+            "detail": "Flashes the project using OpenOCD",
+            // Command
+            "windows": { 
+                "command": "${config:OPENOCD_EXE}",
+                "args": [ 
+                    "-f", "${config:OPENOCD_INTERFACE}",
+                    "-f", "${config:OPENOCD_TARGET}",
+                    "-c", "'program ${input:cmake_executable} verify reset exit'"
+                ]
+            },
+            // Group
+            "group": { "kind": "build" }
+        },
+        
+        /* ===================================================================== */
+        /* ------------------------- Build-flash tasks ------------------------- */
+        /* ===================================================================== */
+
+        { /* ----------------------- Build and flash task ---------------------- */
+            "label": "Build and Flash",
+            "detail": "Builds all targets in the project using default settings and flashes target MCU",
+            // Command
+            "dependsOn": [ "Build", "Flash" ],
+            "dependsOrder": "sequence",
+        },
+        
+        /* ===================================================================== */
+        /* ----------------------------- Test tasks ---------------------------- */
+        /* ===================================================================== */
+
         { /* ---------------------------- Test task ---------------------------- */
             "label": "Run Tests (Colors)",
             "detail": "Run project's tests",
@@ -109,5 +182,31 @@
             // Group
             "group": "build"
         },
+    ],
+
+    // Task parameters
+    "inputs": [
+
+        { /* --------------------------- Build target -------------------------- */
+            "type": "pickString",
+            "id": "cmake_target",
+            "description": "Build target for the CMake",
+            "default": "firmware",
+            "options": [
+                "firmware",
+                "all",
+            ]
+        },
+        /* ------------------------- Target executable ------------------------- */
+        {
+            "type": "pickString",
+            "id": "cmake_executable",
+            "description": "Target CMake executable file",
+            "default": "build/firmware",
+            "options": [
+                "build/firmware",
+            ]
+        },
+
     ]
 }

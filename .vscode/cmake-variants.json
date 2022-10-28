@@ -5,17 +5,17 @@
         "choices": {
             "debug" :{
                 "short": "Debug",
-                "long": "Build with -0g optimisation",
+                "long": "Build with -00 optimisation",
                 "buildType": "Debug"
             },
             "develop" :{
                 "short": "Develop",
-                "long": "Build with -0s optimisation",
+                "long": "Build with -0g optimisation",
                 "buildType": "Develop"
             },
             "release" :{
                 "short": "Release",
-                "long": "Build with -0g ptimisation and additional optimisations",
+                "long": "Build with -0s optimisation",
                 "buildType": "Release"
             }
         }

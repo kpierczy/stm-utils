@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Wednesday, 3rd August 2022 10:54:18 pm
-# @modified   Thursday, 4th August 2022 11:35:13 am
+# @modified   Friday, 28th October 2022 10:54:12 pm
 # @project    stm-utils
 # @brief      Wrapper script providing unified update interface for dependent packages of the project
 # 
@@ -64,7 +64,7 @@ parser.add_argument('-f', '--families', dest='families', type=str, nargs='+', ch
 # ========================================================= Options (cmsis) ======================================================== #
     
 # Families to be updated (argument)
-parser.add_argument('--cmsis-components', dest='cmsis_components', type=str, nargs='+', choices=[ 'core', 'rtos', 'all' ], default=None,
+parser.add_argument('--cmsis-components', dest='cmsis_components', type=str, nargs='+', choices=[ 'core', 'rtos', 'all' ], default=['all'],
     help='List of target CMSIS components to be updated')
 
 # Target repository URL (option)
@@ -142,12 +142,12 @@ def parse_common_options():
     """Parses common options"""
     
     options = []
-
+    
     # Parse options (common)
     if arguments.repo_use_old:
         options += [ '--use-existing-repo' ]
     if arguments.repo_home is not None:
-        options += [ '--repo-home', arguments.repo_home[0] ]
+        options += [ '--repo-home', arguments.repo_home if type(arguments.repo_home) == str else arguments.repo_home[0] ]
     if arguments.repo_keep:
         options += [ '--repo-keep' ] 
 
@@ -237,13 +237,13 @@ if 'hal' in arguments.components or 'all' in arguments.components:
     
     # Parse options (specific)
     if arguments.device_repo_url is not None:
-        options += ['--repo-url', arguments.device_repo_url]
+        options += ['--repo-url', arguments.hal_repo_url]
     if arguments.device_repo_branch is not None:
-        options += ['--repo-branch', arguments.device_repo_branch]
+        options += ['--repo-branch', arguments.hal_repo_branch]
     if arguments.device_repo_commit is not None:
-        options += ['--repo-commit', arguments.device_repo_commit]
+        options += ['--repo-commit', arguments.hal_repo_commit]
     if arguments.device_repo_name is not None:
-        options += ['--repo-name', arguments.device_repo_name]
+        options += ['--repo-name', arguments.hal_repo_name]
 
     # Parse arguments
     if arguments.families is not None:

@@ -1,3 +1,3 @@
-# To do
+# Note
 
-Write down update script downloading target SVD files from [github](https://github.com/posborne/cmsis-svd)
+Additional SVD files can be obtained from [github](https://github.com/posborne/cmsis-svd)

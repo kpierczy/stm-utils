@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Wednesday, 3rd August 2022 10:05:17 pm
-# @modified   Thursday, 4th August 2022 11:36:52 am
+# @modified   Friday, 28th October 2022 10:02:18 pm
 # @project    stm-utils
 # @brief      Arguments parsing utilities
 # 
@@ -118,7 +118,7 @@ def define_common_arguments(parser):
         help='If given, the old repository present at the target repo will not be redownloaded')
         
     # Home directory for the downloaded repo (option)
-    parser.add_argument('-o', '--repo-home', type=str, dest='repo_home', nargs=1, default='.',
+    parser.add_argument('-o', '--repo-home', type=str, dest='repo_home', nargs=1, default='./tmp',
         help='Home directory for the downloaded repo(s)')
     # Target name of the repository directory (option)
     parser.add_argument('-k', '--repo-keep', dest='repo_keep', action='store_true', default=False,

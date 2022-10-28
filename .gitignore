@@ -1,6 +1,38 @@
-# Ignore build directory
-build/
-build/**
-# Ignore local tools
-tools/
-tools/**
+*
+# Keep VS Code config
+!.vscode/cmake-kits.json
+!.vscode/cmake-variants.json
+!.vscode/c_cpp_properties.json
+!.vscode/extensions.json
+!.vscode/keybindings.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
+# Keep CMake files
+!cmake/
+!cmake/**
+# Keep config files
+!config/
+!config/**
+# Keep doc files
+!doc/
+!doc/**
+!lib/**
+# Keep scripts files
+!scripts/
+!scripts/**
+# Keep source files
+!src/
+!src/**
+# Keep test files
+!tests/
+!tests/**
+# Keep auxiliary files
+!.gitignore
+!CMakeLists.txt
+!license
+!readme.md
+!requirements.txt
+!update.py
+# Ignore __pycache__
+__pycache__

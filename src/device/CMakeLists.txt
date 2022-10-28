@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Monday, 14th June 2021 6:53:51 pm
-# @modified   Thursday, 25th August 2022 2:32:28 pm
+# @modified   Friday, 28th October 2022 8:24:36 pm
 # @project    stm-utils
 # @brief      Device-specifix CMSIS interface implementation
 #    
@@ -28,6 +28,13 @@ target_compile_definitions(device
         ${DEVICE}
         ${DeviceType}
 )
+# Add ST-secific defines (dual-core devices only)
+if(DEFINED TargetCore)
+    target_compile_definitions(device
+        PUBLIC
+            ${TargetCore}
+    )
+endif()
 
 # Add HAL build information
 if(HAL_BUILD)

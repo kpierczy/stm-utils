@@ -1,5 +1,87 @@
 {
     /* ============================================================================================================================ */
+    /* --------------------------------------------------- Environment Settings --------------------------------------------------- */
+    /* ============================================================================================================================ */
+    
+    // General configuration
+    "PROJECT_NAME" : "stm-utils",
+    // Toolchain paths
+    "TOOLCHAIN_ROOT" : "${env:TOOLCHAIN_ROOT}",
+    // GCC Toolchain paths
+    "GNU_TOOLCHAIN_HOME" : "${config:TOOLCHAIN_ROOT}/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127/tools",
+    // CMake paths
+    "CMAKE_HOME" : "${config:TOOLCHAIN_ROOT}/cmake-3.23.1",
+    // Ninja paths
+    "NINJA_HOME" : "${config:TOOLCHAIN_ROOT}/ninja-1.10.2",
+    // CCache paths
+    "CCACHE_HOME" : "${config:TOOLCHAIN_ROOT}/ccache-4.6",
+    // OpenOCD paths
+    "OPENOCD_HOME" : "${config:TOOLCHAIN_ROOT}/openocd-0.11.0-5",
+
+    /* ============================================================================================================================ */
+    /* ------------------------------------------------------- Debug Settings ----------------------------------------------------- */
+    /* ============================================================================================================================ */
+
+    // Target device (for cortex-debug)
+    "TARGET_DEVICE" : "*",
+    // OpenOCD debugger
+    "OPENOCD_INTERFACE" : "config/openocd/*.cfg",
+    // "OPENOCD_INTERFACE" : "config/openocd/jlink.cfg",
+    // OpenOCD target
+    "OPENOCD_TARGET" : "target/*.cfg",
+    // OpenOCD SVD file
+    "SVD_FILE" : "${workspaceFolder}/config/svd/.../*.svd",
+    
+    /* ============================================================================================================================ */
+    /* ---------------------------------------------- Environment Settings (parsing) ---------------------------------------------- */
+    /* ============================================================================================================================ */
+    
+    // Toolchain paths
+    "GNU_TOOLCHAIN_BIN"    : "${config:GNU_TOOLCHAIN_HOME}/bin",
+    "GNU_CXX_COMPILER_BIN" : "${config:GNU_TOOLCHAIN_BIN}/arm-none-eabi-g++",
+    "TOOLCHAIN_AWARE_PATH" : "${config:GNU_TOOLCHAIN_BIN};${env:PATH}",
+    // CMake paths
+    "CMAKE_BIN"            : "${config:CMAKE_HOME}/bin",
+    "CMAKE_AWARE_PATH"     : "${config:CMAKE_BIN};${config:TOOLCHAIN_AWARE_PATH}",
+    // Ninja paths
+    "NINJA_BIN"            : "${config:NINJA_HOME}",
+    "NINJA_AWARE_PATH"     : "${config:NINJA_BIN};${config:CMAKE_AWARE_PATH}",
+    // CCache paths
+    "CCACHE_BIN"           : "${config:CCACHE_HOME}",
+    "CCACHE_AWARE_PATH"    : "${config:CCACHE_HOME};${config:NINJA_AWARE_PATH}",
+    // OpenOCD paths
+    "OPENOCD_BIN"          : "${config:OPENOCD_HOME}/bin",
+    "OPENOCD_EXE"          : "${config:OPENOCD_BIN}/openocd.exe",
+    "OPENOCD_AWARE_PATH"   : "${config:OPENOCD_BIN};${config:CCACHE_AWARE_PATH}",
+    // Add paths to the integrated terminal
+    "terminal.integrated.env.windows": { 
+        "GNU_TOOLCHAIN_HOME" : "${config:GNU_TOOLCHAIN_HOME}",
+        "CMAKE_HOME"         : "${config:CMAKE_HOME}",
+        "NINJA_HOME"         : "${config:NINJA_HOME}",
+        "CCACHE_HOME"        : "${config:CCACHE_HOME}",
+        "OPENOCD_HOME"       : "${config:OPENOCD_HOME}",
+        "PATH"               : "${config:OPENOCD_AWARE_PATH}",
+    },
+
+    /* ============================================================================================================================ */
+    /* -------------------------------------------------- Debug Settings (parsing) ------------------------------------------------ */
+    /* ============================================================================================================================ */
+    
+    // Cortex-debug paths
+    "cortex-debug": {
+        "armToolchainPrefix" : "arm-none-eabi",
+        "openocdPath"        : "${config:OPENOCD_EXE}",
+        "armToolchainPath"   : "${config:GNU_TOOLCHAIN_BIN}",
+    },
+
+    // Cortex-debug RTOS settings
+    "cortex-debug.showRTOS": false,
+    // Cortex-debug views settings
+    "cortex-debug.variableUseNaturalFormat": false,
+    // Configure debug view
+    "debug.disassemblyView.showSourceCode": false,
+
+    /* ============================================================================================================================ */
     /* ----------------------------------------------------- General Settings ----------------------------------------------------- */
     /* ============================================================================================================================ */
 
@@ -22,13 +104,6 @@
 
     // Search settings
     "search.useIgnoreFiles": false,
-
-    /* ============================================================================================================================ */
-    /* ------------------------------------------------------ Python Settings ----------------------------------------------------- */
-    /* ============================================================================================================================ */
-
-    // Additional Python paths
-    "python.envFile": "${workspaceFolder}/.vscode/.env",
 
     /* ============================================================================================================================ */
     /* ------------------------------------------------------- CMake Settings ----------------------------------------------------- */
@@ -63,13 +138,18 @@
     /* ------------------------------------------------------ Visual Settings ----------------------------------------------------- */
     /* ============================================================================================================================ */
 
+    // Custom icons (@note ${workspaceFolder is not expanded here})
+    "vsicons.customIconFolderPath": "./.vscode",
     // Icons
     "vsicons.associations.files": [
-        {"icon": "config",   "extensions": ["ioc"], "format": "svg"},
-        {"icon": "assembly", "extensions": ["s"],   "format": "svg"},
+        { "icon": "config",       "extensions": ["ioc"],          "format": "svg" },
+        { "icon": "assembly",     "extensions": ["s"],            "format": "svg" },
     ],
     "vsicons.associations.folders": [
-        {"icon": "plugin", "extensions": ["extern", "dep"], "format": "svg"},
+        { "icon": "plugin",       "extensions": ["extern", "dep"], "format": "svg" },
+        { "icon": "component",    "extensions": ["spike"        ], "format": "svg" },
+        { "icon": "api",          "extensions": ["launch"       ], "format": "svg" },
+        { "icon": "helper",       "extensions": ["urdf"         ], "format": "svg" },
     ],
 
     /* ============================================================================================================================ */

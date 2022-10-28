@@ -1,34 +1,64 @@
 {
+    /* ===================================================================== */
+    /* ----------------------- Default configuration ----------------------- */
+    /* ===================================================================== */
+
     "configurations": [
+
+        /* -------------------- Default debug configuration -------------------- */
         {
             "type": "cortex-debug",
-            "name": "Debug STM32",
-            "request": "launch",
+            "name": "Debug",
+            "request": "attach",
             "cwd": "${workspaceRoot}",
             // Binaries
-            "executable": "${workspaceRoot}/build/app.elf",
+            "executable": "${input:executable}",
             // Debugging info
-            "servertype": "external",
             "showDevDebugTimestamps": true,
             "interface": "swd",
-            "device": "", // E.g. "STM32H743Z,
+            "device": "${config:TARGET_DEVICE}",
             // Peripherals file
-            "svdFile": "", // E.g. "${workspaceRoot}/config/stm32h743zi2periph.svd",
+            "svdFile": "${config:SVD_FILE}",
             // GDB configuration
-            "armToolchainPath": "", // E.g. "${workspaceFolder}/tools/gcc-arm-none-eabi/bin",
-            "toolchainPrefix": "arm-none-eabi",
             "gdbTarget": "192.168.128.160:50000",
             // Debugg config
             "runToEntryPoint": "main",
-            "demangle": true,
             // OpenOCD config
+            "servertype": "openocd",
             "configFiles": [
-                // E.g. "interface/stlink.cfg",
-                // E.g. "target/stm32h7x.cfg"
+                "${config:OPENOCD_INTERFACE}",
+                "${config:OPENOCD_TARGET}"
+            ],
+            // Additional GDB arguments (don't step into std-lib)
+            "debuggerArgs": [
+                "-iex", "skip -gfi ${config:GNU_TOOLCHAIN_HOME}/arm-none-eabi/include/*",
+                "-iex", "skip -gfi ${config:GNU_TOOLCHAIN_HOME}/arm-none-eabi/include/*/*",
+                "-iex", "skip -gfi ${config:GNU_TOOLCHAIN_HOME}/arm-none-eabi/include/*/*/*",
+                "-iex", "skip -gfi ${config:GNU_TOOLCHAIN_HOME}/arm-none-eabi/include/*/*/*/*",
             ],
             
             // Additional config
-            "showDevDebugOutput": false
+            "showDevDebugOutput": "none",
+        }
+    ],
+
+    /* ===================================================================== */
+    /* ----------------------------- Parameters ---------------------------- */
+    /* ===================================================================== */
+
+    // Input variables
+    "inputs": [
+
+        /* ------------------------- Target executable ------------------------- */
+        {
+            "type": "pickString",
+            "id": "executable",
+            "description": "Target executable file to be debugged",
+            "default": "build/firmware.elf",
+            "options": [
+                "build/firmware.elf",
+            ]
         }
     ]
+    
 }

@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Thursday, 15th July 2021 11:27:49 am
-# @modified   Thursday, 4th August 2022 11:26:54 am
+# @modified   Friday, 28th October 2022 11:02:53 pm
 # @project    stm-utils
 # @brief      Downloads CMSIS source from the given URL and replaces local files with the downloaded ones, performing general update
 #             of the CMSIS-Core and CMSIS-RTOS (RT5-based) packages
@@ -118,13 +118,20 @@ if 'core' in arguments.components or 'all' in arguments.components:
 
     utils.logger.info('Updatting CMSIS-Core package...')
 
-    # Copy new files
-    utils.os.copy_glob_content(
-        f'{CORE_PATH   }/Include/*',
-        f'{PACKAGE_HOME}/core/include/',
-        cleanup=True)
+    # Try updating
+    try:
 
-    utils.logger.info('CMSIS-Core package updated')
+        # Copy new files
+        utils.os.copy_glob_content(
+            f'{CORE_PATH   }/Include/*',
+            f'{PACKAGE_HOME}/core/include/',
+            cleanup=True)
+
+        utils.logger.info('CMSIS-Core package updated')
+
+    # On failure
+    except Exception as ex:
+        utils.logger.error(f'Failed to update CMSIS-Core package ({ex})')
 
 # ======================================================== Update CMSIS-RTOS ======================================================= #
 
@@ -135,47 +142,54 @@ if 'rtos' in arguments.components or 'all' in arguments.components:
 
     utils.logger.info('Updatting CMSIS-RTOS package...')
 
-    # Copy new include files
-    utils.os.copy_glob_content(
-        f'{RTOS_PATH   }/Include/*',
-        f'{PACKAGE_HOME}/rtos/include/',
-        cleanup=True)
-    
-    # Copy new CMSIS RTOS files
-    utils.os.copy(
-        f'{RTOS_PATH   }/Source/os_systick.c',
-        f'{PACKAGE_HOME}/rtos/src/',
-        cleanup=True)
-    
-    # Update old RTX config files (remove all files except RTE_Components.h which is hand-written)
-    utils.os.find_and_remove_except(
-        f'{PACKAGE_HOME}/rtos/config/',
-        [ 'RTE_Components.h' ])
-    # Copy new files
-    utils.os.copy_glob_content(
-        f'{RTOS_PATH   }/RTX/Config/*',
-        f'{PACKAGE_HOME}/rtos/config/')
-    # Rename handlers configuration file
-    utils.os.move(
-        f'{PACKAGE_HOME}/rtos/config/handlers.c',
-        f'{PACKAGE_HOME}/rtos/config/RTX_Handlers.c')
+    # Try updating
+    try:
 
-    # Copy new RTX5 include files
-    utils.os.copy_glob_content(
-        f'{RTOS_PATH   }/RTX/Include/*',
-        f'{PACKAGE_HOME}/rtos/src/rtx/include/',
-        cleanup=True)
+        # Copy new include files
+        utils.os.copy_glob_content(
+            f'{RTOS_PATH   }/Include/*',
+            f'{PACKAGE_HOME}/rtos/include/',
+            cleanup=True)
+        
+        # Copy new CMSIS RTOS files
+        utils.os.copy(
+            f'{RTOS_PATH   }/Source/os_systick.c',
+            f'{PACKAGE_HOME}/rtos/src/',
+            cleanup=True)
+        
+        # Update old RTX config files (remove all files except RTE_Components.h which is hand-written)
+        utils.os.find_and_remove_except(
+            f'{PACKAGE_HOME}/rtos/config/',
+            [ 'RTE_Components.h' ])
+        # Copy new files
+        utils.os.copy_glob_content(
+            f'{RTOS_PATH   }/RTX/Config/*',
+            f'{PACKAGE_HOME}/rtos/config/')
+        # Rename handlers configuration file
+        utils.os.move(
+            f'{PACKAGE_HOME}/rtos/config/handlers.c',
+            f'{PACKAGE_HOME}/rtos/config/RTX_Handlers.c')
 
-    # Update old RTX source files
-    utils.os.refresh_directory(f'{PACKAGE_HOME}/rtos/src/rtx/src')
-    utils.os.refresh_directory(f'{PACKAGE_HOME}/rtos/src/rtx/src/gcc')
-    # Copy new files
-    utils.os.copy_glob_content(f'{RTOS_PATH}/RTX/Source/GCC/*', f'{PACKAGE_HOME}/rtos/src/rtx/src/gcc/')
-    utils.os.copy_glob_content(f'{RTOS_PATH}/RTX/Source/*.h',   f'{PACKAGE_HOME}/rtos/src/rtx/src/'    )
-    utils.os.copy_glob_content(f'{RTOS_PATH}/RTX/Source/*.c',   f'{PACKAGE_HOME}/rtos/src/rtx/src/'    )
+        # Copy new RTX5 include files
+        utils.os.copy_glob_content(
+            f'{RTOS_PATH   }/RTX/Include/*',
+            f'{PACKAGE_HOME}/rtos/src/rtx/include/',
+            cleanup=True)
 
-    # Log update finish
-    utils.logger.info('CMSIS-RTOS package updated')
+        # Update old RTX source files
+        utils.os.refresh_directory(f'{PACKAGE_HOME}/rtos/src/rtx/src')
+        utils.os.refresh_directory(f'{PACKAGE_HOME}/rtos/src/rtx/src/gcc')
+        # Copy new files
+        utils.os.copy_glob_content(f'{RTOS_PATH}/RTX/Source/GCC/*', f'{PACKAGE_HOME}/rtos/src/rtx/src/gcc/')
+        utils.os.copy_glob_content(f'{RTOS_PATH}/RTX/Source/*.h',   f'{PACKAGE_HOME}/rtos/src/rtx/src/'    )
+        utils.os.copy_glob_content(f'{RTOS_PATH}/RTX/Source/*.c',   f'{PACKAGE_HOME}/rtos/src/rtx/src/'    )
+
+        # Log update finish
+        utils.logger.info('CMSIS-RTOS package updated')
+
+    # On failure
+    except Exception as ex:
+        utils.logger.error(f'Failed to update CMSIS-RTOS package package ({ex})')
 
 # ============================================================= Cleanup ============================================================ #
 

@@ -191,7 +191,10 @@ const vector_function_ptr isr_vectors_table[] __attribute__((section(".isr_vecto
     EXC_MemoryManagement,
     EXC_BusFault,
     EXC_UsageFault,
-    0, 0, 0, 0,
+    0,
+    0,
+    0,
+    0,
     SVC_Handler,
     EXC_DebugMonitor,
     0,
@@ -282,7 +285,8 @@ const vector_function_ptr isr_vectors_table[] __attribute__((section(".isr_vecto
     ISR_Cryp,
     ISR_Hash_RNG,
     ISR_FPU,
-    0, 0,
+    0,
+    0,
     ISR_SPI4,
     ISR_SPI5
 };

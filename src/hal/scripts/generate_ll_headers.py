@@ -3,24 +3,48 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Friday, 16th July 2021 10:17:57 am
-# @modified   Tuesday, 30th August 2022 11:06:27 am
+# @modified   Friday, 28th October 2022 10:52:52 pm
 # @project    stm-utils
 # @brief      Generates universal headers for LL library for all possible STM32 targets
 #    
 # @copyright Krzysztof Pierczyk © 2022
 # ====================================================================================================================================
 
+import sys
+import os
+from datetime import datetime
+
+# ========================================================== Configuration ========================================================= #
+
+# Path to the main project's dircetory
+PROJECT_HOME = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../..')
+
+# Add python module to the PATH containing links definitions
+sys.path.append(os.path.join(PROJECT_HOME, 'scripts'))
+
+# ============================================================ Imports ============================================================= #
+
 from Cheetah.Template import Template
 import os
+import utils
+import codecs
+
+# ============================================================= Helpers ============================================================ #
+
+def add_ordinal(n):
+    return str(n) + ("th" if (4 <= n % 100 <= 20) else { 1: "st", 2 : "nd", 3 : "rd"}.get(n % 10, "th"))
+
+def format_datetime(dt):
+    return dt.strftime("%A, " + add_ordinal(dt.day) + " %B %Y %X ") + dt.strftime('%p').lower()
 
 # ============================================================ Template ============================================================ #
 
-template = """/* ============================================================================================================================= *//**
+template = u"""/* ============================================================================================================================= *//**
  * @file       stm32_ll_${lib}.h
  * @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
  * @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
- * @date       Sunday, 18th July 2021 4:42:07 pm
- * @modified   Monday, 19th July 2021 4:59:58 pm
+ * @date       ${datetime}
+ * @modified   ${datetime}
  * @project    stm-utils
  * @brief      Aggregating header file for STM32 ${lib_description} Low Level library
  *    
@@ -50,38 +74,53 @@ template = """/* ===============================================================
 # ========================================================== Dictionaries ========================================================== #
 
 # List o families to generate for
-families = [ "F0", "F1", "F2", "F3", "F4", "F7", "G0", "G4", "H7", "L0", "L1", "L4", "L5" ]
+families = [x.upper() for x in utils.config.SUPPORTED_FAMILIES ]
 
 # List of libraries to generate headers for (pairs "libname" : "description")
 libraries = {
-    "adc"    : "ADC (Analog to Digital Converter)",
-    "bus"    : "system bus",
-    "cortex" : "CPU core",
-    "crc"    : "CRC (Cyclic Redundancy Check)",
-    "dac"    : "DAC (Digital to Analog Converter)",
-    "dma2d"  : "DMA (Direct Memory Access) 2D",
-    "dma"    : "DMA (Direct Memory Access)",
-    "dmamux" : "DMAMUX (Direct Memory Access Requests Multiplexer)",
-    "exti"   : "EXTI (External Interrupt)",
-    "fmc"    : "FMC (Flash Memory Interface)",
-    "fmpi2c" : "FMPI2C (Fast Module Pulse I2C)",
-    "fsmc"   : "FSMC (Flexible Static Memory Controller)",
-    "gpio"   : "GPIO (Generl Port Input/Output)",
-    "i2c"    : "I2C interface",
-    "iwdg"   : "IWDG (Independent Watchdog)",
-    "lptim"  : "LPTIM (Low Power Timer)",
-    "pwr"    : "power",
-    "rcc"    : "RCC (Reset & Clock Control)",
-    "rng"    : "RNG (Random Number Generator)",
-    "rtc"    : "RTC (Real Time Clock)",
-    "sdmmc"  : "SDMMC (Secure Digital Multimedia Card)",
-    "spi"    : "SPI interface",
-    "system" : "system",
-    "tim"    : "timer",
-    "usart"  : "USART interface",
-    "usb"    : "USB interface",
-    "utils"  : "utilities",
-    "wwdg"   : "WWDG (Windowed Watchdog)"
+    "adc"        : "ADC (Analog to Digital Converter)",
+    "bdma"       : "Basic DMA (Direct Memory Access)",
+    "bus"        : "System bus",
+    "comp"       : "Analog comparator",
+    "cordic"     : "Cordic Coprocessor",
+    "cortex"     : "CPU core",
+    "crc"        : "CRC (Cyclic Redundancy Check)",
+    "crs"        : "CRS (Clock Recovery System)",
+    "dac"        : "DAC (Digital to Analog Converter)",
+    "delayblock" : "Hardware delay block",
+    "dma2d"      : "DMA (Direct Memory Access) 2D",
+    "dma"        : "DMA (Direct Memory Access)",
+    "dmamux"     : "DMAMUX (Direct Memory Access Requests Multiplexer)",
+    "hsem"       : "Hardware semaphore",
+    "hrtim"      : "HRTIM (High-resolution Timer)",
+    "exti"       : "EXTI (External Interrupt)",
+    "fmac"       : "FMAC (Filter Math Accelerator)",
+    "fmc"        : "FMC (Flash Memory Interface)",
+    "fmpi2c"     : "FMPI2C (Fast Module Pulse I2C)",
+    "fsmc"       : "FSMC (Flexible Static Memory Controller)",
+    "gpio"       : "GPIO (Generl Port Input/Output)",
+    "i2c"        : "I2C interface",
+    "ipcc"       : "Inter-processor communication controller",
+    "iwdg"       : "IWDG (Independent Watchdog)",
+    "lptim"      : "LPTIM (Low Power Timer)",
+    "lpuart"     : "LPUART (Low Power UART)",
+    "mdma"       : "Master DMA (Direct Access Memory)",
+    "opamp"      : "OPAMP (Operational Amplifier)",
+    "pka"        : "Public Key Accelerator",
+    "pwr"        : "Power",
+    "rcc"        : "RCC (Reset & Clock Control)",
+    "rng"        : "RNG (Random Number Generator)",
+    "rtc"        : "RTC (Real Time Clock)",
+    "sdmmc"      : "SDMMC (Secure Digital Multimedia Card)",
+    "spi"        : "SPI interface",
+    "system"     : "System",
+    "swpmi"      : "SWPMI (Single-wire Protocol Master Interface)",
+    "tim"        : "timer",
+    "ucpd"       : "UPCD (USB Type C / Power Delivery)",
+    "usart"      : "USART interface",
+    "usb"        : "USB interface",
+    "utils"      : "utilities",
+    "wwdg"       : "WWDG (Windowed Watchdog)"
 }
 
 # Generation namespace
@@ -89,6 +128,7 @@ namespace = {
     "families"        : families,
     "lib"             : "",
     "lib_description" : "",
+    "datetime"        : format_datetime(datetime.now()),
 }
 
 # ============================================================== Code ============================================================== #
@@ -114,5 +154,5 @@ for key, value in libraries.items():
     t = Template(template, searchList=[namespace])
 
     # Write template to file
-    with open(path, 'w') as f:
+    with codecs.open(path, 'w', 'utf-8') as f:
         f.write(str(t))

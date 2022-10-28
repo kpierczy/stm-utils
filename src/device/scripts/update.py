@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Thursday, 15th July 2021 11:27:49 am
-# @modified   Thursday, 25th August 2022 2:33:29 pm
+# @modified   Friday, 28th October 2022 11:01:29 pm
 # @project    stm-utils
 # @brief      Updates CMSIS device files from official ST's github
 #    
@@ -68,52 +68,59 @@ if len(arguments.families) == 0:
 
 # Check if all families are to be updated
 if 'all' in arguments.families:
-    arguments.families = utils.config.supported_families
+    arguments.families = utils.config.SUPPORTED_FAMILIES
 
 # Iterate over all devices
 for family in arguments.families:
 
     utils.logger.info(f'Updating device library for {family.capitalize()} family...')
+
+    # Try updating
+    try:
     
-    # Parse URL schem
-    url_scheme = arguments.repo_url if type(arguments.repo_url) == str else arguments.repo_url[0]
-    # Download repo
-    utils.arguments.download_repo(
-        repo_url_scheme=url_scheme,
-        repo_root=DEVICE_ROOT.replace('<family>', family).replace('<FAMILY>', family.capitalize()),
-        family=family,
-        branch_opt=arguments.repo_branch,
-        commit_opt=arguments.repo_commit,
-        cleanup=not arguments.repo_use_old
-    )
+        # Parse URL schem
+        url_scheme = arguments.repo_url if type(arguments.repo_url) == str else arguments.repo_url[0]
+        # Download repo
+        utils.arguments.download_repo(
+            repo_url_scheme=url_scheme,
+            repo_root=DEVICE_ROOT.replace('<family>', family).replace('<FAMILY>', family.capitalize()),
+            family=family,
+            branch_opt=arguments.repo_branch,
+            commit_opt=arguments.repo_commit,
+            cleanup=not arguments.repo_use_old
+        )
 
-    utils.logger.info(f'Copying include files...')
+        utils.logger.info(f'Copying include files...')
 
-    # Remove old device-specific include files
-    utils.os.refresh_directory(f'{PACKAGE_HOME}/include/device/st/stm32{family}xx')
-    # Remove aggregating header
-    utils.os.remove(f'{PACKAGE_HOME}/include/device/st/stm32{family}xx.h')
+        # Remove old device-specific include files
+        utils.os.refresh_directory(f'{PACKAGE_HOME}/include/device/st/stm32{family}xx')
+        # Remove aggregating header
+        utils.os.remove(f'{PACKAGE_HOME}/include/device/st/stm32{family}xx.h')
 
-    # Copy all include files from the downloaded repository
-    utils.os.copy_glob_content(
-        f'{DEVICE_ROOT}/Include/*',
-        f'{PACKAGE_HOME}/include/device/st/stm32{family}xx/')
-    # Move aggregating header to the upper folder
-    utils.os.move(
-        f'{PACKAGE_HOME}/include/device/st/stm32{family}xx/stm32{family}xx.h',
-        f'{PACKAGE_HOME}/include/device/st/stm32{family}xx.h')
+        # Copy all include files from the downloaded repository
+        utils.os.copy_glob_content(
+            f'{DEVICE_ROOT}/Include/*',
+            f'{PACKAGE_HOME}/include/device/st/stm32{family}xx/')
+        # Move aggregating header to the upper folder
+        utils.os.move(
+            f'{PACKAGE_HOME}/include/device/st/stm32{family}xx/stm32{family}xx.h',
+            f'{PACKAGE_HOME}/include/device/st/stm32{family}xx.h')
 
-    utils.logger.info(f'Copying source files...')
+        utils.logger.info(f'Copying source files...')
 
-    # Remove old device-specific source files
-    utils.os.remove(f'{PACKAGE_HOME}/src/device/system_stm32{family}xx.c')
-    # Copy new source files from the downloaded repository
-    utils.os.copy(
-        f'{DEVICE_ROOT}/Source/Templates/system_stm32{family}xx.c',
-        f'{PACKAGE_HOME}/src/device/')
+        # Remove old device-specific source files
+        utils.os.remove(f'{PACKAGE_HOME}/src/device/system_stm32{family}xx.c')
+        # Copy new source files from the downloaded repository
+        utils.os.copy(
+            f'{DEVICE_ROOT}/Source/Templates/system_stm32{family}xx.c',
+            f'{PACKAGE_HOME}/src/device/')
 
-    # Remove downlaoded repository
-    if not arguments.repo_keep:
-        utils.os.remove_dir(DEVICE_ROOT)
+        # Remove downlaoded repository
+        if not arguments.repo_keep:
+            utils.os.remove_dir(DEVICE_ROOT)
+
+    # On failure
+    except Exception as ex:
+        utils.logger.error(f'Failed to update device library for {family.capitalize()} family ({ex})')
 
 # ================================================================================================================================== #

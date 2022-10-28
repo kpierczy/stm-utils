@@ -3,7 +3,7 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Thursday, 15th July 2021 2:11:27 pm
-# @modified   Thursday, 4th August 2022 2:44:13 pm
+# @modified   Friday, 28th October 2022 9:41:20 pm
 # @project    stm-utils
 # @brief      Helper script selecting appropriate device include file and architecture based on the device model
 #    
@@ -110,65 +110,116 @@ list(APPEND DEVICES_L5
     "STM32L552xx" "STM32L562xx"
 )
 
+# Support devices' list (WL)
+list(APPEND DEVICES_WL
+    "STM32WL55xx" "STM32WL54xx" "STM32WLE5xx" "STM32WLE4xx"
+)
+
+# Support devices' list (WB)
+list(APPEND DEVICES_WB
+    "STM32WB55xx" "STM32WB5Mxx" "STM32WB50xx" "STM32WB35xx" "STM32WB30xx" "STM32WB15xx"
+    "STM32WB10xx" "STM32WB1Mxx"
+)
+
 # ====================================================================================================================================
 # ----------------------------------------------------- Device info's dispatch -------------------------------------------------------
 # ====================================================================================================================================
 
 # Select required variables based on the device
 if(${DEVICE} IN_LIST DEVICES_F0)
-    set(Architecture "armv6m")
-    set(DeviceFamily "stm32f0xx")
-    set(DeviceType   "STM32MCU_MAJOR_TYPE_F0")
+    set(DeviceFamily  "stm32f0xx")
+    set(DeviceType    "STM32MCU_MAJOR_TYPE_F0")
+    set(Core          "cortex-m0")
 elseif(${DEVICE} IN_LIST DEVICES_F1)
-    set(Architecture "armv7m")
     set(DeviceFamily "stm32f1xx")
     set(DeviceType   "STM32MCU_MAJOR_TYPE_F1")
+    set(Core         "cortex-m3")
 elseif(${DEVICE} IN_LIST DEVICES_F2)
-    set(Architecture "armv7m")
     set(DeviceFamily "stm32f2xx")
     set(DeviceType   "STM32MCU_MAJOR_TYPE_F2")
+    set(Core         "cortex-m3")
 elseif(${DEVICE} IN_LIST DEVICES_F3)
-    set(Architecture "armv7m")
-    set(DeviceFamily "stm32f3xx")
-    set(DeviceType   "STM32MCU_MAJOR_TYPE_F3")
+    set(DeviceFamily  "stm32f3xx")
+    set(DeviceType    "STM32MCU_MAJOR_TYPE_F3")
+    set(Core         "cortex-m4f")
 elseif(${DEVICE} IN_LIST DEVICES_F4)
-    set(Architecture "armv7m")
     set(DeviceFamily "stm32f4xx")
     set(DeviceType   "STM32MCU_MAJOR_TYPE_F4")
+    set(Core         "cortex-m4f")
 elseif(${DEVICE} IN_LIST DEVICES_F7)
-    set(Architecture "armv7m")
     set(DeviceFamily "stm32f7xx")
     set(DeviceType   "STM32MCU_MAJOR_TYPE_F7")
+    set(Core         "cortex-m7f")
 elseif(${DEVICE} IN_LIST DEVICES_G0)
-    set(Architecture "armv6m")
     set(DeviceFamily "stm32g0xx")
     set(DeviceType   "STM32MCU_MAJOR_TYPE_G0")
+    set(Core         "cortex-m0plus")
 elseif(${DEVICE} IN_LIST DEVICES_G4)
-    set(Architecture "armv7m")
     set(DeviceFamily "stm32g4xx")
     set(DeviceType   "STM32MCU_MAJOR_TYPE_G4")
+    set(Core         "cortex-m4f")
 elseif(${DEVICE} IN_LIST DEVICES_H7)
-    set(Architecture "armv7m")
     set(DeviceFamily "stm32h7xx")
     set(DeviceType   "STM32MCU_MAJOR_TYPE_H7")
+    set(Core         "cortex-m7dp")
 elseif(${DEVICE} IN_LIST DEVICES_L0)
-    set(Architecture "armv6m")
     set(DeviceFamily "stm32l0xx")
     set(DeviceType   "STM32MCU_MAJOR_TYPE_L0")
+    set(Core         "cortex-m0plus")
 elseif(${DEVICE} IN_LIST DEVICES_L1)
-    set(Architecture "armv7m")
     set(DeviceFamily "stm32l1xx")
     set(DeviceType   "STM32MCU_MAJOR_TYPE_L1")
+    set(Core          "cortex-m3")
 elseif(${DEVICE} IN_LIST DEVICES_L4)
-    set(Architecture "armv7m")
     set(DeviceFamily "stm32l4xx")
     set(DeviceType   "STM32MCU_MAJOR_TYPE_L4")
+    set(Core         "cortex-m4f")
 elseif(${DEVICE} IN_LIST DEVICES_L5)
-    set(Architecture "armv8mmbl")
     set(DeviceFamily "stm32l5xx")
     set(DeviceType   "STM32MCU_MAJOR_TYPE_L5")
+    set(Core         "cortex-m33f")
+elseif(${DEVICE} IN_LIST DEVICES_WL)
+    set(DeviceFamily "stm32wlxx")
+    set(DeviceType   "STM32MCU_MAJOR_TYPE_WL")
+    set(Core         "cortex-m4")
+elseif(${DEVICE} IN_LIST DEVICES_WB)
+    set(DeviceFamily  "stm32wbxx")
+    set(DeviceType    "STM32MCU_MAJOR_TYPE_WB")
+    set(Core          "cortex-m4f")
 else()
     message(FATAL_ERROR "Unknown target device (${DEVICE})") 
+endif()
+
+# Correct required variables based on the target core (only for dual-core devices)
+if(DEFINED TARGET_CORE)
+    # STM32H7 dual core configurations
+    if(${DEVICE} IN_LIST DEVICES_H7)
+        if(${TARGET_CORE} STREQUAL CM4)
+            set(Core "cortex-m4f")
+        elseif(${TARGET_CORE} STREQUAL CM7)
+            set(Core "cortex-7dp")
+        else()
+            message(FATAL_ERROR "TARGETC_CORE value for the STM32H7 family can eb either 'CM4' or 'CM7'") 
+        else()
+    # STM32WL dual core configurations
+    elseif(${DEVICE} IN_LIST DEVICES_WL)
+        if(${TARGET_CORE} STREQUAL CM0+)
+            set(Core "cortex-m0plus")
+        elseif(${TARGET_CORE} STREQUAL CM4)
+            set(Core "cortex-4")
+        else()
+            message(FATAL_ERROR "TARGETC_CORE value for the STM32WL family can eb either 'CM0+' or 'CM4'") 
+        else()
+    # STM32WB dual core configurations
+    elseif(${DEVICE} IN_LIST DEVICES_WB)
+        if(${TARGET_CORE} STREQUAL CM0+)
+            set(Core "cortex-m0plus")
+        elseif(${TARGET_CORE} STREQUAL CM4)
+            set(Core "cortex-4")
+        else()
+            message(FATAL_ERROR "TARGETC_CORE value for the STM32WB family can eb either 'CM0+' or 'CM4'") 
+        else()
+    endif()
 endif()
 
 # Define device's CMSIS header

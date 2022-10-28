@@ -42,6 +42,10 @@
 #include "stm32l4xx_hal.h"
 #elif defined(STM32MCU_MAJOR_TYPE_L5)
 #include "stm32l5xx_hal.h"
+#elif defined(STM32MCU_MAJOR_TYPE_WL)
+#include "stm32wlxx_hal.h"
+#elif defined(STM32MCU_MAJOR_TYPE_WB)
+#include "stm32wbxx_hal.h"
 #else
 #error Unknown MCU major type
 #endif

@@ -3,13 +3,9 @@
 # @author     Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @maintainer Krzysztof Pierczyk (krzysztof.pierczyk@gmail.com)
 # @date       Monday, 14th June 2021 6:53:51 pm
-# @modified   Thursday, 4th August 2022 2:28:57 am
+# @modified   Friday, 28th October 2022 9:37:41 pm
 # @project    stm-utils
 # @brief      CMSIS package for an arbitrary Cortex-M platform
-#  
-# @note This CMakeLists directory requires two variables - Architecture and DeviceInclude - to be set, to properly compile sources.
-#    The former is a string identifying an architecture of the target device. The latter names a CMSIS-defined `device include file`
-#    of the target device. Both of these are set by the `cmake/device.cmake` helper script called in the project's main CMakeFile.txt.
 #
 # @copyright Krzysztof Pierczyk © 2022
 # ====================================================================================================================================
@@ -31,6 +27,25 @@ set(RTX_HANDLERS_FILE "${CMAKE_CURRENT_LIST_DIR}/config/RTX_Handlers.c" CACHE FI
 # ====================================================================================================================================
 # ------------------------------------------------------------- Library --------------------------------------------------------------
 # ====================================================================================================================================
+
+# Select architecture
+if(${Core} STREQUAL cortex-m0)
+    set(Architecture armv6m)
+elseif(${Core} STREQUAL cortex-m0plus)
+    set(Architecture armv6m)
+elseif(${Core} STREQUAL cortex-m3)
+    set(Architecture armv7m)
+elseif(${Core} STREQUAL cortex-m4)
+    set(Architecture armv7m)
+elseif(${Core} STREQUAL cortex-m4f)
+    set(Architecture armv7m)
+elseif(${Core} STREQUAL cortex-m7f)
+    set(Architecture armv7m)
+elseif(${Core} STREQUAL cortex-m7dp)
+    set(Architecture armv7m)
+elseif(${Core} STREQUAL cortex-m33f)
+    set(Architecture armv8mbl)
+endif()
 
 # Define library
 add_library(cmsis_rtos
@@ -104,8 +119,8 @@ if(${MASTER_PROJECT})
             DESTINATION ${CMAKE_INSTALL_LIBDIR}
     )
 
-    # Set exported name of the `cmsis_rtos` target to `CMSIS::RTOS`
-    set_target_properties(cmsis_rtos PROPERTIES EXPORT_NAME CMSIS::RTOS)
+    # Set exported name of the `cmsis_rtos` target to `cmsis::rtos`
+    set_target_properties(cmsis_rtos PROPERTIES EXPORT_NAME cmsis::rtos)
 
     # Install header files
     install(DIRECTORY include/                   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

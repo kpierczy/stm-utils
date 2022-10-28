@@ -3,61 +3,14 @@
     "configurations": [
         {
             // Project config
-            "name": "stm-utils",
+            "name": "shark-kb",
             "cStandard": "c11",
             "cppStandard": "c++20",
-            "compilerPath": "/usr/bin/g++",
+            "compilerPath": "${config:GNU_TOOLCHAIN_HOME}/bin/arm-none-eabi-g++",
             // Intellisense mode
             "intelliSenseMode": "gcc-arm",
-
-            // Include Paths (non-recursively)
-            "includePath": [
-
-                // CMSIS Core
-                "${workspaceFolder}/src/cmsis/core/include",
-                // CMSIS RTOS
-                "${workspaceFolder}/src/cmsis/rtos/config",
-                "${workspaceFolder}/src/cmsis/rtos/include",
-                "${workspaceFolder}/src/cmsis/rtos/rtx/include",
-                // Device files
-                "${workspaceFolder}/src/device/include",
-                "${workspaceFolder}/src/device/include/device",
-                "${workspaceFolder}/src/device/include/device/**",
-                "${workspaceFolder}/src/device/include/interrupts",
-                // HAL
-                "${workspaceFolder}/src/hal/config",
-                "${workspaceFolder}/src/hal/config/include",
-                "${workspaceFolder}/src/hal/include",
-                "${workspaceFolder}/src/hal/include/hal",
-                "${workspaceFolder}/src/hal/include/hal/**",
-                "${workspaceFolder}/src/hal/include/ll",
-                "${workspaceFolder}/src/hal/include/ll/**",
-
-            ],
-            
-            // General defines
-            "defines": [
-
-                // Type of the MCU
-                // - e.g. "STM32F411xE",
-                // - e.g. "STM32MCU_MAJOR_TYPE_F4",
-                // ARM-specific GCC flag
-                // - e.g. "__ARM_ARCH_7EM__",
-                // - e.g. "__ARM_FP",
-                // DEBUG Mode
-                // - "DEBUG",
-                // Full LL driver
-                // "USE_FULL_LL_DRIVER"
-
-            ],
-
-            // Browsed directories (recursively)
-            "browse": {
-                "limitSymbolsToIncludedHeaders": true,
-                "path": [
-                    "${workspaceFolder}/src"
-                ]
-            }
+            // Configuration provider
+            "configurationProvider": "ms-vscode.cmake-tools"
         }
     ]
 }
