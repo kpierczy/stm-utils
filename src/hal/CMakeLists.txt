@@ -17,9 +17,12 @@
 # Path to the include directory containing hal_assert.h and hal_config.h files
 set(HAL_CONFIG_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/config" CACHE PATH    
     "Path to the include directory containing hal_assert.h and hal_config.h files")
-# Target device
+# Whether to use full LL driver
 set(USE_FULL_LL ON CACHE BOOL
     "If true, full LL library is built")
+# Whether to use full-assert construct
+set(USE_FULL_ASSERT OFF CACHE BOOL
+    "If true, sources will be built with <STM_UTILS_USE_FULL_ASSERT> define")
 
 # ====================================================================================================================================
 # ------------------------------------------------------- Library definition ---------------------------------------------------------
@@ -54,11 +57,19 @@ target_compile_definitions(hal
 )
 
 # Add compilation flags
+target_compile_definitions(hal
+    PUBLIC
+        "USE_FULL_ASSERT")
+# Add optional compilation flags
 if(${USE_FULL_LL})
-    target_compile_options(hal
+    target_compile_definitions(hal
         PUBLIC
-            "-DUSE_FULL_LL_DRIVER"
-    )
+            "USE_FULL_LL_DRIVER")
+endif()
+if(${USE_FULL_ASSERT})
+    target_compile_definitions(hal
+        PUBLIC
+            "STM_UTILS_USE_FULL_ASSERT")
 endif()
 
 # Include include directories

@@ -15,7 +15,7 @@
 # ====================================================================================================================================
 
 # Flag deciding whether to add RTX RTOS target to the build
-set(USE_CMSIS_RTOS ON CACHE BOOL "If TRUE the library will add RTX RTOS to CMake targets")
+set(USE_CMSIS_RTOS OFF CACHE BOOL "If TRUE the library will add RTX RTOS to CMake targets")
    
 # ====================================================================================================================================
 # ----------------------------------------------------------- Components -------------------------------------------------------------

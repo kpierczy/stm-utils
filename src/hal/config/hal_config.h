@@ -23,10 +23,7 @@
 #define VDD_VALUE 3300U
 
 // Tick interrupt priority (lowest by default)
-#define TICK_INT_PRIORITY ((uint32_t)(1U << __NVIC_PRIO_BITS) - 1U) 
-
-// HAL assert usage
-#define USE_FULL_ASSERT
+#define TICK_INT_PRIORITY ((uint32_t)(1U << __NVIC_PRIO_BITS) - 1U)
 
 // Information about RTOS usage
 #define USE_RTOS 0U

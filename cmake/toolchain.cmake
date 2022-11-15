@@ -23,12 +23,21 @@
 # @see [1] https://stackoverflow.com/questions/62795924/parameterizing-custom-cmake-toolchain
 # --------------------------------------------------------------------------------------------
 
+# Cache DEVICE variable
+if(NOT DEFINED ENV{DEVICE})
+    set(ENV{DEVICE} ${DEVICE})
+else()
+    set(DEVICE $ENV{DEVICE})
+endif()
+
+# Parse device
+include(${CMAKE_CURRENT_LIST_DIR}/device.cmake)
+
 # Cache value of the OpenOCD target name
 if(NOT DEFINED ENV{TOOLCHAIN_OPENOCD_DEFAULT_TARGET})
 
     # Include common definitions
     include(${CMAKE_CURRENT_LIST_DIR}/utilities/utilities.cmake)
-
     # Calculate default name for the OpenOCD target file
     remove_last_character(${DeviceFamily} TOOLCHAIN_OPENOCD_DEFAULT_TARGET)
     # Keep variable in env
@@ -39,11 +48,6 @@ endif()
 # Cache CMAKE_BUILD_TYPE variable
 if(NOT DEFINED ENV{TOOLCHAIN_CMAKE_BUILD_TYPE})
     set(ENV{TOOLCHAIN_CMAKE_BUILD_TYPE} ${CMAKE_BUILD_TYPE})
-endif()
-
-# Cache Core variable
-if(NOT DEFINED ENV{Core})
-    set(ENV{Core} ${Core})
 endif()
 
 # ====================================================================================================================================
@@ -59,7 +63,7 @@ set(TOOLCHAIN_ROOT "" CACHE PATH "Path to the root directory of the ARM Embedded
 # Name of the OpenOCD debug interface file
 set(TOOLCHAIN_OPENOCD_INTERFACE "stlink" CACHE STRING "Name of the OpenOCD debug interface file")
 # Name of the OpenOCD target file
-set(TOOLCHAIN_OPENOCD_TARGET "$ENV{TOOLCHAIN_OPENOCD_DEFAULT_TARGET}" CACHE STRING "Name of the OpenOCD debug interface file")
+set(TOOLCHAIN_OPENOCD_TARGET "${TOOLCHAIN_OPENOCD_DEFAULT_TARGET}" CACHE STRING "Name of the OpenOCD debug interface file")
 
 # ====================================================================================================================================
 # ------------------------------------------------------------ Definitions -----------------------------------------------------------

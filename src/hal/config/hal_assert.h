@@ -19,10 +19,14 @@
 extern "C" {
 #endif
 
+/* ================================================================================================================================ */
+
+#ifndef assert_param
+
 /* ========================================================= Declarations ========================================================= */
 
 // If full assert is used along HAL library
-#ifdef  USE_FULL_ASSERT
+#ifdef STM_UTILS_USE_FULL_ASSERT
 
 /**
  * @brief Reports assert's failure during processing HAL function
@@ -52,6 +56,10 @@ void assert_failed(uint8_t* file, uint32_t line);
  *         line number of the call that failed.
  */
 #define assert_param(expr) ((void) 0U)
+
+#endif
+
+/* ================================================================================================================================ */
 
 #endif
 
